@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    block title 
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    nav 
+      a(href="/about") About
+      br
+      a(href="/contacts") Contacts 
+      if !currentUser
+        br
+        a(href="/register") Register
+        br
+        a(href="/login") Log In
+      if currentUser
+        br 
+        a(href="/profile") Profile 
+        br
+        a(href="/logout") Log Out
+        br
+    block content

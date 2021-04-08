@@ -1,0 +1,15 @@
+extends layout
+block title 
+  title Login 
+block content
+  h1 Login 
+  form(method="POST" action="/login")
+    label(for="email") Email:
+      input#email(type="email" required name="email")
+    br
+    label(for="password") Password: 
+      input(type="password" required name="password")
+    br
+    button(type="submit") Connect
+    br 
+    a(href="/forgetPassword") Forget password  

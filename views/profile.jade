@@ -1,0 +1,17 @@
+extends layout
+block title 
+    title Profile 
+block content 
+    h1 Profile 
+    if avatar.length !== 0 
+        img(src="#{avatar}" alt="avatar" height="80px" width="80px") 
+    else 
+        img(src="images/avatar.jpg" alt="avatar" height="80px" width="80px")
+    h2 Welcome to our site #{name}
+    div name: #{name}
+    div surname: #{surname}
+    div email: #{email}
+    div adress: #{adress}
+    div phone: #{phone}
+    div birthday: #{birthday.toDateString()}
+    div gender: #{gender}
