@@ -1,0 +1,36 @@
+extends layout
+block title 
+  title Update Pet Profile 
+block content
+  h1 Update Profile 
+  form(method="POST" action="/profile/updatePetProfile/#{_id}" enctype="multipart/form-data")
+    label(for="name") Name*:
+      input#name(type="text" name="name" required value="#{name}")
+    br
+    label(for="photo") Photo : 
+      input#photo(type="file" name="photo")
+    br
+    label(for="breed") Breed* : 
+      input#breed(type="text" name="breed" required value="#{breed}")
+    br
+    label(for="weight") Weight in kg*: 
+      input#weight(type="number" name="weight" required value="#{weight}")
+    br
+    label(for="birthday") Birthday* : 
+      input#birthday(type="date" name="birthday" min="1920-01-01" max="2021-12-31" required value="#{birthday.toISOString().split('T')[0]}")
+    br
+    if sex === "male"
+        div Sex* : 
+        input#male(type="radio" name="sex" value="male" checked)
+        label(for="male") Male  
+        input#female(type="radio" name="sex" value="female")
+        label(for="female") Female 
+        br
+    else 
+        div Sex* : 
+        input#male(type="radio" name="sex" value="male")
+        label(for="male") Male  
+        input#female(type="radio" name="sex" value="female" checked)
+        label(for="female") Female 
+        br
+    button(type="submit") Update  

@@ -4,43 +4,43 @@ block title
 block content
   h1 Register 
   form(method="POST" action="/register" enctype="multipart/form-data")
-      label(for="name") Name*:
-        input#name(type="text" name="name" required)
-      br
-      label(for="surname") Surname*:
-        input#surname(type="text" name="surname" required)
-      br
-      label(for="email") Email* :
-        input#email(type="email" name="email" required)
-      br
-      label(for="password") Password*: 
-        input#password(type="password" name="password" required)
-      br
-      label(for="confirmPassword") Confirm Password*: 
-        input#confirmPassword(type="password" name="confirmPassword" required)
-      br
-      label(for="avatar") Avatar : 
-        input#avatar(type="file" name="avatar")
-      br
-      label(for="adress") Adress: 
-        input#adress(type="text" name="adress")
-      br
-      label(for="phone") Phone Number*: 
-        input#phone(type="tel" name="phone" pattern="[0-9]{8}" required)
-      br
-      label(for="birthday") Birthday* : 
-        input#birthday(type="date" name="birthday" min="1920-01-01" max="2021-12-31" required)
-      br
-      div Gender: 
-        input#male(type="radio" name="gender" value="male")
-        label(for="male") Male  
-        input#female(type="radio" name="gender" value="female")
-        label(for="female") Female 
-     
-      label(for="role") Account type* : 
-      select#role(name="role" required)
-        <option value="">--Please choose an option--</option>
-        <option value="Pet Owner">Pet Owner</option>
-        <option value="Vet">Vet</option>
-      br
-      button(type="submit") Register  
+    label(for="name") Name*:
+      input#name(type="text" name="name" required)
+    br
+    label(for="surname") Surname*:
+      input#surname(type="text" name="surname" required)
+    br
+    label(for="email") Email* :
+      input#email(type="email" name="email" required)
+    br
+    label(for="password") Password*: 
+      input#password(type="password" name="password" required)
+    br
+    label(for="confirmPassword") Confirm Password*: 
+      input#confirmPassword(type="password" name="confirmPassword" required)
+    br
+    label(for="avatar") Avatar : 
+      input#avatar(type="file" name="avatar")
+    br
+    label(for="adress") Adress: 
+      input#adress(type="text" name="adress")
+    br
+    label(for="phone") Phone Number*: 
+      input#phone(type="tel" name="phone" pattern="[0-9]{8}" required)
+    br
+    label(for="birthday") Birthday* : 
+      input#birthday(type="date" name="birthday" min="1920-01-01" max="2021-12-31" required)
+    br
+    div Gender: 
+      input#male(type="radio" name="gender" value="male")
+      label(for="male") Male  
+      input#female(type="radio" name="gender" value="female")
+      label(for="female") Female 
+    
+    label(for="role") Account type* : 
+    select#role(name="role" required)
+      <option value="">--Please choose an option--</option>
+      <option value="Pet Owner">Pet Owner</option>
+      <option value="Vet">Vet</option>
+    br
+    button(type="submit") Register  

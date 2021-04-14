@@ -1,0 +1,15 @@
+extends layout
+block title 
+    title My Pets  
+block content 
+    h1 My Pets 
+    if pets.length > 0 
+        each pet in pets  
+            div 
+                if pet.photo
+                    img(src="#{pet.photo}", alt="pet photo" height="70px" width="70px")
+                a(href="/profile/petProfile/#{pet._id}")  #{pet.name}
+                a(href="/profile/deletePet/#{pet._id}") 
+                    button delete pet 
+    a(href="/profile/addPet")  
+        button add new pet   

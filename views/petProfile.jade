@@ -1,0 +1,106 @@
+extends layout
+block title 
+    title Pet Profile 
+block content 
+    img(src="#{pet.photo}" alt="photo" height="80px" width="80px") 
+    h1 #{pet.name}'s Profile 
+    a(href="/profile/updatePetProfile/#{pet._id}")
+        button Update 
+    div owner: #{owner.name} #{owner.surname}
+    div breed: #{pet.breed}
+    div weight: #{pet.weight}
+    div birthday: #{pet.birthday.toDateString()}
+    div sex: #{pet.sex}
+    //h2 Appointments 
+    //table
+        tr 
+            td date  
+            td lieu  
+            td rapport 
+            td vet  
+        if appountments.length > 0 
+            each appointment in appointments  
+                tr
+                    td #{appointment.date}
+                    td #{appointment.lieu}
+                    td #{appointment.rapport}
+                    td #{appointment.vet}
+                    a(href="/profile/petProfile/#{pet._id}/updateAppointment/#{appointment._id}") 
+                            button update appointment 
+                    a(href="/profile/petProfile/#{pet._id}/deleteAppointment/#{appointment._id}") 
+                            button delete appointment 
+    //a(href="/profile/PetProfile/#{pet._id}/addAppointment")  
+        button add new appointment   
+    //h2 Vaccines
+    //table
+        tr 
+            td nom   
+            td date   
+            td description  
+            td vet   
+        if vaccines.length > 0 
+            each vaccine in vaccines  
+                tr
+                    td #{vaccine.nom}
+                    td #{vaccine.date}
+                    td #{vaccine.description}
+                    td #{vaccine.vet}
+                    a(href="/profile/petProfile/#{pet._id}/updateVaccine/#{vaccine._id}") 
+                            button update vaccine 
+                    a(href="/profile/petProfile/#{pet._id}/deleteVaccine/#{vaccine._id}") 
+                            button delete vaccine 
+    //a(href="/profile/PetProfile/#{pet._id}/addvaccine")  
+        button add new vaccine  
+    //h2 Food  
+    //table
+        tr 
+            td nom   
+            td date   
+            td quantite 
+        if food.length > 0 
+            each meal in food  
+                tr
+                    td #{meal.nom}
+                    td #{meal.date}
+                    td #{meal.quantite}
+                    a(href="/profile/petProfile/#{pet._id}/updateFood/#{meal._id}") 
+                            button update meal 
+                    a(href="/profile/petProfile/#{pet._id}/deleteFood/#{meal._id}") 
+                            button delete meal 
+    //a(href="/profile/PetProfile/#{pet._id}/adfood")  
+        button add new meal
+    //h2 Bath 
+    //table
+        tr 
+            td date  
+            td description  
+        if baths.length > 0 
+            each bath in baths  
+                tr
+                    td #{bath.date}
+                    td #{bath.description}
+                    a(href="/profile/petProfile/#{pet._id}/updatebath/#{bath._id}") 
+                            button update bath
+                    a(href="/profile/petProfile/#{pet._id}/deletebath/#{bath._id}") 
+                            button delete bath 
+    //a(href="/profile/PetProfile/#{pet._id}/addbath")  
+        button add new bath 
+    //h2 Other treatments  
+    //table
+        tr 
+            td type  
+            td date  
+            td description  
+        if treatments.length > 0 
+            each treatment in treatments  
+                tr
+                    td #{treatment.type}
+                    td #{treatment.date}
+                    td #{treatment.description}
+                    a(href="/profile/petProfile/#{pet._id}/updatetreatment/#{treatment._id}") 
+                            button update treatment 
+                    a(href="/profile/petProfile/#{pet._id}/deletetreatment/#{treatment._id}") 
+                            button delete treatment 
+    //a(href="/profile/PetProfile/#{pet._id}/addtreatment")  
+        button add new treatment
+    

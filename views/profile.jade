@@ -3,11 +3,10 @@ block title
     title Profile 
 block content 
     h1 Profile 
-    if avatar.length !== 0 
-        img(src="#{avatar}" alt="avatar" height="80px" width="80px") 
-    else 
-        img(src="images/avatar.jpg" alt="avatar" height="80px" width="80px")
+    img(src="#{avatar}" alt="avatar" height="80px" width="80px") 
     h2 Welcome to our site #{name}
+    a(href="/updateProfile") 
+        button update Infos
     div name: #{name}
     div surname: #{surname}
     div email: #{email}
@@ -15,3 +14,6 @@ block content
     div phone: #{phone}
     div birthday: #{birthday.toDateString()}
     div gender: #{gender}
+    if role==="Pet Owner"
+        a(href="/profile/myPets")
+            button My pets 
