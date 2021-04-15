@@ -4,8 +4,9 @@ var AppointmentSchema = new mongoose.Schema({
     date:{type:Date,required:true},
     lieu:{type:String},
     rapport:{type:String},
-    pet:{type:String,required:true},
-    vet:{type:String,required:true}
+    //pet:{type:Schema.Types.ObjectId,ref:"Pet",required:true},
+    done:{type:Boolean,default:false},
+    vet:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}
 });
 
 var Appointment = mongoose.model("Appointment",AppointmentSchema);

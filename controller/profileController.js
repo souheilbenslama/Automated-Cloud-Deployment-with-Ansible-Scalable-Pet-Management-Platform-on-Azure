@@ -6,7 +6,7 @@ exports.profile = function(req, res, next) {
         if(error){
             return next(error);
         }else{
-            res.render("profile",user);
+            res.send(user);
         }
     });
 }
@@ -16,7 +16,7 @@ exports.updateProfile_get = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            res.render("updateProfile",user);
+            res.send(user);
         }
     });
 }

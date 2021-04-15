@@ -12,10 +12,10 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
-mongoose.connect("mongodb://localhost:27017/petsi");
+mongoose.connect("mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test");
 const db = mongoose.connection;
 
-app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb://localhost:27017/petsi"})}));
+app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test"})}));
 app.use(function(req,res,next){
   res.locals.currentUser=req.session.userId;
   next();
@@ -51,7 +51,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err);
 });
 
 module.exports = app;

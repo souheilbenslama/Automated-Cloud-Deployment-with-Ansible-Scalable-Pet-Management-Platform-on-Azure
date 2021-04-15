@@ -1,14 +1,13 @@
 var mongoose = require("mongoose");
 
-var VaccineSchema = new mongoose.Schema({
+var WeightSchema = new mongoose.Schema({
     name:{type:String,required:true},
     date:{type:Date,required:true},
     description:{type:String},
-    done:{type:Boolean,default:false},
     //pet:{type:String,required:true}
     vet:{type:mongoose.Schema.Types.ObjectId,ref:"Pet",required:true}
 });
 
-var Vaccine = mongoose.model("Vaccine",VaccineSchema);
+var Weight = mongoose.model("Weight",WeightSchema);
 
-module.exports = Vaccine ;
+module.exports = Weight ;

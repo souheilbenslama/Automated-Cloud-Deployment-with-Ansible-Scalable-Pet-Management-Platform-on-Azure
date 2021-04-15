@@ -8,7 +8,7 @@ exports.login_post = function(req, res, next) {
     User.authenticate(req.body.email,req.body.password,function(error,user){
         if(!user || error){
             var err = new Error("Wrong credentials!");
-            err.status=401;
+            res.status(401);
             return next(err);
         }else{
             req.session.userId=user._id;
@@ -20,8 +20,7 @@ exports.login_post = function(req, res, next) {
 exports.register_post = function(req, res, next) {
     if(req.body.password !== req.body.confirmPassword){
         var err = new Error("Passwords do not match");
-        err.status = 400;
-        res.render("error",{"error":err});
+        res.status(400).send(err.message);
     }
     var userData = {
         name:req.body.name,
@@ -63,8 +62,7 @@ exports.forgetPassword_post = function(req,res,next){
             }else{
                 if(!result){
                     var error = new Error("mail not found!");
-                    error.status=401;
-                    return res.render("error",{error:error});
+                    return res.status(401).send(error.message);
                 }
             }
         });
@@ -89,17 +87,16 @@ exports.forgetPassword_post = function(req,res,next){
             if (err) {
                 return next(err);
             }else {
-                res.render("forgetPassword",{msg:"code sent",accessCode:code,email:req.body.email});
+                res.send({msg:"code sent",accessCode:code,email:req.body.email});
             }
         });
     }
     if(req.body.code){
         if(req.body.code === req.body.accessCode){
-            return res.render("resetPassword",{email:req.body.userEmail});
+            return res.send(req.body.userEmail);
         }else{
             var err = new Error("Wrong code");
-            err.status = 400;
-            res.render("error",{"error":err});
+            res.status(400).send(err.message);
         }
     }
 }
@@ -107,8 +104,7 @@ exports.forgetPassword_post = function(req,res,next){
 exports.resetPassword_post = function(req,res,next){
     if(req.body.password !== req.body.confirmPassword){
         var err = new Error("Passwords do not match");
-        err.status = 400;
-        res.render("error",{"error":err});
+        res.status(400).send(err.message);
     }
     User.findOne({ email: req.body.email }, function(err, user){
         if(err){

@@ -1,34 +1,49 @@
 var Pet = require("../models/Pet");
-var User = require("../models/User");
 var Appointment = require("../models/Appointment");
 var Bath = require("../models/Bath");
 var Food = require("../models/Food");
 var Treatment = require("../models/Treatment");
 var Vaccine = require("../models/Vaccine");
+var Weight = require("../models/Weight");
 var exports = module.exports = {};
 
+exports.addAppointment_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
 exports.addAppointment_post = function(req,res,next){
-    var appointmentData = {
-        date:req.body.date,
-        lieu:req.body.lieu,
-        rapport:req.body.rapport,
-        pet:req.params.petId,
-        vet:req.body.vet
-    };
-    Appointment.create(appointmentData,function(error,appointment){ 
+    Appointment.create(req.body,function(error,appointment){ 
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+req.params.petId);
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        appointment:appointment._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+req.params.petId);
+                            }
+                    });
+                }
+            });
         }
     }); 
 }
 exports.showAppointments = function(req,res,next){
-    Appointment.find({pet:req.params.petId}).exec(function(error,appointment){
+    Pet.findById(req.params.petId).populate("appointment").exec(function(error,pet){
         if(error){
             return next(error);
         }else{
-            res.render("appointments",appointments);
+            res.send(pet);
         }
     });
 }
@@ -37,7 +52,7 @@ exports.updateAppointment_get = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            res.render("updateAppointment",appointment);
+            res.send({appointment:appointment,petId:req.params.petId});
         }
     });
 }
@@ -46,12 +61,8 @@ exports.updateAppointment_post = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Appointment.findOneAndUpdate({_id:req.params.appointmentId},{$set:{
-                date:req.body.date,
-                lieu:req.body.lieu,
-                rapport:req.body.rapport,
-                vet:req.body.vet
-                }},function(err,appointment){
+            Appointment.findOneAndUpdate({_id:req.params.appointmentId},{$set:req.body
+                },function(err,appointment){
                     if(err){
                         next(err);
                     }else{
@@ -72,28 +83,53 @@ exports.deleteAppointment = function(req,res,next){
     });
 }
 
+exports.addVaccine_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
 exports.addVaccine_post = function(req,res,next){
-    var vaccineData = {
-        name:req.body.name,
-        date:req.body.date,
-        description:req.body.description,
-        pet:req.params.petId,
-        vet:req.body.vet
-    };
-    Vaccine.create(vaccineData,function(error,vaccine){ 
+    Vaccine.create(req.body,function(error,vaccine){ 
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+req.params.petId);
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        vaccine:vaccine._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+pet._id);
+                            }
+                    });
+                }
+            });
         }
-    }); 
+    });
+    res.redirect("/profile/petProfile/"+req.params.petId);
+}
+exports.showVaccines = function(req,res,next){
+    Pet.findById(req.params.petId).populate("vaccine").exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            res.send(pet);
+        }
+    });
 }
 exports.updateVaccine_get = function(req,res,next){
     Vaccine.findById(req.params.vaccineId).exec(function(error,vaccine){
         if(error){
             return next(error);
         }else{
-            res.render("updateVaccine",vaccine);
+            res.send({vaccine:vaccine,petId:req.params.petId});
         }
     });
 }
@@ -128,27 +164,53 @@ exports.deleteVaccine = function(req,res,next){
     });
 }
 
+exports.addFood_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
 exports.addFood_post = function(req,res,next){
-    var foodData = {
-        name:req.body.name,
-        date:req.body.date,
-        quantity:req.body.quantity,
-        pet:req.params.petId
-    };
-    Food.create(foodData,function(error,food){ 
+    Food.create(req.body,function(error,food){ 
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+req.params.petId);
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        food:food._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+pet._id);
+                            }
+                    });
+                }
+            });
         }
-    }); 
+    });
+    res.redirect("/profile/petProfile/"+req.params.petId);
+}
+exports.showFood = function(req,res,next){
+    Pet.findById(req.params.petId).populate("food").exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            res.send(pet);
+        }
+    });
 }
 exports.updateFood_get = function(req,res,next){
     Food.findById(req.params.foodId).exec(function(error,food){
         if(error){
             return next(error);
         }else{
-            res.render("updateFood",food);
+            res.send({food:food,petId:req.params.petId});
         }
     });
 }
@@ -160,8 +222,7 @@ exports.updateFood_post = function(req,res,next){
             Food.findOneAndUpdate({_id:req.params.foodId},{$set:{
                 name:req.body.name,
                 date:req.body.date,
-                quantity:req.body.quantity,
-                pet:req.params.petId
+                quantity:req.body.quantity
                 }},function(err,food){
                     if(err){
                         next(err);
@@ -183,26 +244,52 @@ exports.deleteFood = function(req,res,next){
     });
 }
 
+exports.addBath_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
 exports.addBath_post = function(req,res,next){
-    var bathData = {
-        date:req.body.date,
-        description:req.body.description,
-        pet:req.params.petId,
-    };
-    Bath.create(bathData,function(error,bath){ 
+    Bath.create(req.body,function(error,bath){ 
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+req.params.petId);
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        bath:bath._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+pet._id);
+                            }
+                    });
+                }
+            });
         }
     }); 
+}
+exports.showBaths = function(req,res,next){
+    Pet.findById(req.params.petId).populate("bath").exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            res.send(pet);
+        }
+    });
 }
 exports.updateBath_get = function(req,res,next){
     Bath.findById(req.params.bathId).exec(function(error,bath){
         if(error){
             return next(error);
         }else{
-            res.render("updateBath",bath);
+            res.send({bath:bath,petId:req.params.petId});
         }
     });
 }
@@ -211,7 +298,7 @@ exports.updateBath_post = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Bath.findOneAndUpdate({_id:req.params.bathId},{$set:{
+            Bath.findOneAndUpdate({_id:bath._id},{$set:{
                 date:req.body.date,
                 description:req.body.description
                 }},function(err,bath){
@@ -235,27 +322,131 @@ exports.deleteBath = function(req,res,next){
     });
 }
 
-exports.addTreatment_post = function(req,res,next){
-    var treatmentData = {
-        type:req.body.type,
-        date:req.body.date,
-        description:req.body.description,
-        pet:req.params.petId
-    };
-    Treatment.create(treatmentData,function(error,treatment){ 
+exports.addWeight_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
+exports.addWeight_post = function(req,res,next){
+    Weight.create(req.body,function(error,weight){ 
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+req.params.petId);
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        weight:weight._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+pet._id);
+                            }
+                    });
+                }
+            });
         }
     }); 
+}
+exports.showWeights = function(req,res,next){
+    Pet.findById(req.params.petId).populate("weight").exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            res.send(pet);
+        }
+    });
+}
+exports.updateWeight_get = function(req,res,next){
+    Weight.findById(req.params.weightId).exec(function(error,weight){
+        if(error){
+            return next(error);
+        }else{
+            res.send({bath:weight,petId:req.params.petId});
+        }
+    });
+}
+exports.updateWeight_post = function(req,res,next){
+    Weight.findById(req.params.weightId).exec(function(error,bath){
+        if(error){
+            return next(error);
+        }else{
+            Weight.findOneAndUpdate({_id:weight._id},{$set:{
+                date:req.body.date,
+                description:req.body.description
+                }},function(err,weight){
+                    if(err){
+                        next(err);
+                    }else{
+                        res.redirect("/profile/petProfile/"+req.params.petId);
+                    }
+            });
+        }
+    });
+}
+exports.deleteWeight = function(req,res,next){
+    Bath.remove({ _id: req.params.weightId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.redirect("/profile/petProfile/"+req.params.petId);
+        }
+    });
+}
+
+exports.addTreatment_get = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(err,pet){
+        if(err){
+            return next(err);
+        }else{
+            res.send(pet);
+        }
+    });
+}
+exports.addTreatment_post = function(req,res,next){
+    Treatment.create(req.body,function(error,treatment){ 
+        if(error){
+            return next(error);
+        }else{
+            Pet.findById(req.params.petId).exec(function(error,pet){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                        treatment:treatment._id}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.redirect("/profile/petProfile/"+pet._id);
+                            }
+                    });
+                }
+            });
+        }
+    });
+    res.redirect("/profile/petProfile/"+req.params.petId);
+}
+exports.showTreatments = function(req,res,next){
+    Pet.findById(req.params.petId).populate("treatment").exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            res.send(pet);
+        }
+    });
 }
 exports.updateTreatment_get = function(req,res,next){
     Treatment.findById(req.params.appointmentId).exec(function(error,treatment){
         if(error){
             return next(error);
         }else{
-            res.render("updateTreatment",treatment);
+            res.send({treatment:treatment,petId:req.params.petId});
         }
     });
 }
@@ -267,7 +458,7 @@ exports.updateTreatment_post = function(req,res,next){
             Treatment.findOneAndUpdate({_id:req.params.treatmentId},{$set:{
                 type:req.body.type,
                 date:req.body.date,
-                description:req.body.description,
+                description:req.body.description
                 }},function(err,treatment){
                     if(err){
                         next(err);

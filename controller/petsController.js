@@ -1,6 +1,4 @@
-const { render } = require("jade");
 var Pet = require("../models/Pet");
-var User = require("../models/User");
 var exports = module.exports = {};
 
 exports.myPets = function(req,res,next){
@@ -8,7 +6,7 @@ exports.myPets = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            res.render("myPets",{pets:result});
+            res.send({pets:result});
         }
     });
 }
@@ -33,21 +31,20 @@ exports.addPet_post = function(req,res,next){
 }
 
 exports.petProfile = function(req,res,next){
-    var pet = Pet.findById(req.params.petId);
-    console.log("pet: "+pet);
-    /* Pet.findById(req.params.petId).exec(function(error,pet){
-        if(error){
-            return next(error);
-        }else{
-            User.findById(pet.owner).exec(function(error,user){
-                if(error){
-                    return next(error);
-                }else{
-                    res.render("petProfile",{pet:pet,owner:user});
-                }
-            });
-        }
-    });  */
+    Pet.findById(req.params.petId)
+        .populate("bath")
+        .populate("food")
+        .populate("appointment")
+        .populate("vaccine")
+        .populate("treatment")
+        .populate("owner")
+        .exec(function(err,pet){
+            if(err){
+                return next(err);
+            }else{
+                res.send(pet);
+            }
+        });
 }
 
 exports.updatePetProfile_get = function(req,res,next){
@@ -56,7 +53,7 @@ exports.updatePetProfile_get = function(req,res,next){
             return next(error);
         }else{
             console.log(pet.birthday.toISOString().split("T")[0]);
-            res.render("updatePetProfile",pet);
+            res.send(pet);
         }
     });
 }
