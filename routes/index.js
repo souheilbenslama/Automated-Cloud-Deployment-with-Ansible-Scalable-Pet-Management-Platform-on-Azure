@@ -18,34 +18,12 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index');
-});
-
-router.get('/about', function(req, res, next) {
-  res.render('about');
-});
-
-router.get('/contacts', function(req, res, next) {
-  res.render('contacts');
-});
-
-router.get('/login',mid.loggedOut, function(req, res, next) {
-  res.render('login');
-});
 router.post('/login', authentificationController.login_post);
 
-router.get("/forgetPassword",mid.loggedOut,function(req,res,next){
-  res.render("forgetPassword");
-});
 router.post("/forgetPassword",authentificationController.forgetPassword_post)
 
 router.post("/resetPassword",authentificationController.resetPassword_post)
 
-router.get("/register",mid.loggedOut, function(req, res, next) {
-  res.render("register");
-});
 router.post("/register",upload.single("avatar"),authentificationController.register_post);
 
 router.get("/profile",mid.loggedIn,profileController.profile);
@@ -57,9 +35,6 @@ router.get("/logout",mid.loggedIn,authentificationController.logout);
 
 router.get("/profile/myPets",mid.loggedIn,petsController.myPets);
 
-router.get("/profile/addPet",mid.loggedIn,function(req,res,next){
-  res.render("addPet");
-});
 router.post("/profile/addPet",upload.single("photo"),petsController.addPet_post);
 
 router.get("/profile/petProfile/:petId",mid.loggedIn,petsController.petProfile);
@@ -103,9 +78,7 @@ router.get("/profile/petProfile/:petId/updateFood/:foodId",mid.loggedIn,eventCon
 router.post("/profile/petProfile/:petId/updateFood/:foodId",eventController.updateFood_post);
 router.get("/profile/petProfile/:petId/deleteFood/:foodId",mid.loggedIn,eventController.deleteFood);
 
-router.get("/profile/petProfile/:petId/addTreatment",mid.loggedIn,function(req,res,next){
-  res.render("addTreatment");
-});
+router.get("/profile/petProfile/:petId/addTreatment",mid.loggedIn,eventController.addTreatment_get);
 router.post("/profile/petProfile/:petId/addTreatment",eventController.addTreatment_post);
 router.get("/profile/petProfile/:petId/treatments",mid.loggedIn,eventController.showTreatments);
 router.get("/profile/petProfile/:petId/updateTreatment/:treatmentId",mid.loggedIn,eventController.updateTreatment_get);
