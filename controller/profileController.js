@@ -11,17 +11,17 @@ exports.profile = function(req, res, next) {
     });
 }
 
-exports.updateProfile_get = function(req,res,next){
-    User.findById(req.session.userId).exec(function(error,user){
+exports.getUsers = function(req,res,next){
+    User.find().exec(function(error,users){
         if(error){
             return next(error);
         }else{
-            res.send(user);
+            res.send(users);
         }
     });
 }
 
-exports.updateProfile_post = function(req,res,next){
+exports.updateProfile = function(req,res,next){
     User.findById(req.session.userId).exec(function(error,user){
         if(error){
             return next(error);

@@ -4,20 +4,20 @@ require("dotenv").config();
 var exports = module.exports = {};
 var smtpTransport = require("nodemailer-smtp-transport");
 
-exports.login_post = function(req, res, next) {
+exports.login = function(req, res, next) {
     User.authenticate(req.body.email,req.body.password,function(error,user){
         if(!user || error){
             var err = new Error("Wrong credentials!");
-            res.status(401);
-            return next(err);
+            res.status(401).send(err.message);
         }else{
             req.session.userId=user._id;
-            res.redirect("/profile");
+            delete user["password"];
+            res.send(user);
         }
     });
 }
 
-exports.register_post = function(req, res, next) {
+exports.register = function(req, res, next) {
     if(req.body.password !== req.body.confirmPassword){
         var err = new Error("Passwords do not match");
         res.status(400).send(err.message);
@@ -39,7 +39,8 @@ exports.register_post = function(req, res, next) {
             return next(error);
         }else{
             req.session.userId=user._id;
-            res.redirect("/profile");
+            delete user.password;
+            res.send(user);
         }
     }); 
 }
@@ -49,12 +50,12 @@ exports.logout = function(req,res,next){
         if(err){
             return next(err);
         }else{
-            return res.redirect("/");
+            return res.status(200).send("logged out");
         }
     });
 }
   
-exports.forgetPassword_post = function(req,res,next){
+exports.forgetPassword = function(req,res,next){
     if(req.body.email){
         User.findOne({email:req.body.email},function(err,result){
             if(err){
@@ -101,7 +102,7 @@ exports.forgetPassword_post = function(req,res,next){
     }
 }
 
-exports.resetPassword_post = function(req,res,next){
+exports.resetPassword = function(req,res,next){
     if(req.body.password !== req.body.confirmPassword){
         var err = new Error("Passwords do not match");
         res.status(400).send(err.message);
@@ -116,7 +117,7 @@ exports.resetPassword_post = function(req,res,next){
                 if(err){
                     return next(err);
                 }else{
-                    res.redirect("/login");
+                    res.status(200).send("Password reset successfully");
                 }
             })
         }

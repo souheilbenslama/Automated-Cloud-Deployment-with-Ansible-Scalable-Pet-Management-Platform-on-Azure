@@ -11,7 +11,7 @@ exports.myPets = function(req,res,next){
     });
 }
 
-exports.addPet_post = function(req,res,next){
+exports.addPet = function(req,res,next){
     var petData = {
         name:req.body.name,
         photo:(req.file)?"uploads/" + req.file.filename:"images/avatar.jpg",
@@ -47,18 +47,7 @@ exports.petProfile = function(req,res,next){
         });
 }
 
-exports.updatePetProfile_get = function(req,res,next){
-    Pet.findById(req.params.petId).exec(function(error,pet){
-        if(error){
-            return next(error);
-        }else{
-            console.log(pet.birthday.toISOString().split("T")[0]);
-            res.send(pet);
-        }
-    });
-}
-
-exports.updatePetProfile_post = function(req,res,next){
+exports.updatePetProfile = function(req,res,next){
     Pet.findById(req.params.petId).exec(function(error,pet){
         if(error){
             return next(error);

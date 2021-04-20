@@ -18,71 +18,75 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
 
-router.post('/login', authentificationController.login_post);
+router.post('/login', authentificationController.login);
 
-router.post("/forgetPassword",authentificationController.forgetPassword_post)
+router.post("/forgetPassword",authentificationController.forgetPassword)
 
-router.post("/resetPassword",authentificationController.resetPassword_post)
+router.post("/resetPassword",authentificationController.resetPassword)
 
-router.post("/register",upload.single("avatar"),authentificationController.register_post);
+router.post("/register",upload.single("avatar"),authentificationController.register);
 
-router.get("/profile",mid.loggedIn,profileController.profile);
+router.route("/profile")
+      .get(mid.loggedIn,profileController.profile)
+      .put(upload.single("avatar"),profileController.updateProfile);
 
-router.get("/updateProfile",mid.loggedIn,profileController.updateProfile_get);
-router.post("/updateProfile",upload.single("avatar"),profileController.updateProfile_post);
+router.get("/getUsers",mid.loggedIn,profileController.getUsers);
 
 router.get("/logout",mid.loggedIn,authentificationController.logout);
 
-router.get("/profile/myPets",mid.loggedIn,petsController.myPets);
+router.get("/myPets",mid.loggedIn,petsController.myPets);
+router.post("/addPet",upload.single("photo"),petsController.addPet);
+router.route("/pet/:petId")
+      .get(mid.loggedIn,petsController.petProfile)
+      .put(upload.single("photo"),petsController.updatePetProfile)
+      .delete(mid.loggedIn,petsController.deletePet);
 
-router.post("/profile/addPet",upload.single("photo"),petsController.addPet_post);
+router.route("/pet/:petId/appointment")
+      .post(eventController.addAppointment)
+      .get(mid.loggedIn,eventController.showAppointments);
+router.route("/pet/:petId/appointment/:appointmentId")
+      .get(mid.loggedIn,eventController.findAppointment)
+      .put(eventController.updateAppointment)
+      .delete(mid.loggedIn,eventController.deleteAppointment);
 
-router.get("/profile/petProfile/:petId",mid.loggedIn,petsController.petProfile);
+router.route("/pet/:petId/bath")
+      .post(eventController.addBath)
+      .get(mid.loggedIn,eventController.showBaths);
+router.route("/pet/:petId/bath/:bathId")
+      .get(mid.loggedIn,eventController.findBath)
+      .put(eventController.updateBath)
+      .delete(mid.loggedIn,eventController.deleteBath);
 
-router.get("/profile/updatePetProfile/:petId",mid.loggedIn,petsController.updatePetProfile_get);
-router.post("/profile/updatePetProfile/:petId",upload.single("photo"),petsController.updatePetProfile_post);
+router.route("/pet/:petId/weight")
+      .post(eventController.addWeight)
+      .get(mid.loggedIn,eventController.showWeights);
+router.route("/pet/:petId/weight/:weightId")
+      .get(mid.loggedIn,eventController.findWeight)
+      .put(eventController.updateWeight)
+      .delete(mid.loggedIn,eventController.deleteWeight);
 
-router.get("/profile/deletePet/:petId",mid.loggedIn,petsController.deletePet);
+router.route("/pet/:petId/vaccine")
+      .post(eventController.addVaccine)
+      .get(mid.loggedIn,eventController.showVaccines);
+router.route("/pet/:petId/vaccine/:vaccineId")
+      .get(mid.loggedIn,eventController.findVaccine)
+      .put(eventController.updateVaccine)
+      .delete(mid.loggedIn,eventController.deleteVaccine);
 
-router.get("/profile/petProfile/:petId/addAppointment",mid.loggedIn,eventController.addAppointment_get);
-router.post("/profile/petProfile/:petId/addAppointment",eventController.addAppointment_post);
-router.get("/profile/petProfile/:petId/updateAppointment/:appointmentId",mid.loggedIn,eventController.updateAppointment_get);
-router.post("/profile/petProfile/:petId/updateAppointment/:appointmentId",eventController.updateAppointment_post);
-router.get("/profile/petProfile/:petId/deleteAppointment/:appointmentId",mid.loggedIn,eventController.deleteAppointment);
+router.route("/pet/:petId/food")
+      .post(eventController.addFood)
+      .get(mid.loggedIn,eventController.showFood);
+router.route("/pet/:petId/food/:foodId")
+      .get(mid.loggedIn,eventController.findFood)
+      .put(eventController.updateFood)
+      .delete(mid.loggedIn,eventController.deleteFood);
 
-router.get("/profile/petProfile/:petId/addBath",mid.loggedIn,eventController.addBath_get);
-router.post("/profile/petProfile/:petId/addBath",eventController.addBath_post);
-router.get("/profile/petProfile/:petId/baths",mid.loggedIn,eventController.showBaths);
-router.get("/profile/petProfile/:petId/updateBath/:bathId",mid.loggedIn,eventController.updateBath_get);
-router.post("/profile/petProfile/:petId/updateBath/:bathId",eventController.updateBath_post);
-router.get("/profile/petProfile/:petId/deleteBath/:bathId",mid.loggedIn,eventController.deleteBath);
-
-router.get("/profile/petProfile/:petId/addWeight",mid.loggedIn,eventController.addWeight_get);
-router.post("/profile/petProfile/:petId/addWeight",eventController.addWeight_post);
-router.get("/profile/petProfile/:petId/baths",mid.loggedIn,eventController.showWeights);
-router.get("/profile/petProfile/:petId/updateWeight/:weightId",mid.loggedIn,eventController.updateWeight_get);
-router.post("/profile/petProfile/:petId/updateWeight/:weightId",eventController.updateWeight_post);
-router.get("/profile/petProfile/:petId/deleteWeight/:weightId",mid.loggedIn,eventController.deleteWeight);
-
-router.get("/profile/petProfile/:petId/addVaccine",mid.loggedIn,eventController.addVaccine_get);
-router.post("/profile/petProfile/:petId/addVaccine",eventController.addVaccine_post);
-router.get("/profile/petProfile/:petId/vaccines",mid.loggedIn,eventController.showVaccines);
-router.get("/profile/petProfile/:petId/updateVaccine/:vaccineId",mid.loggedIn,eventController.updateVaccine_get);
-router.post("/profile/petProfile/:petId/updateVaccine/:vaccineId",eventController.updateVaccine_post);
-router.get("/profile/petProfile/:petId/deleteVaccine/:vaccineId",mid.loggedIn,eventController.deleteVaccine);
-
-router.get("/profile/petProfile/:petId/addFood",mid.loggedIn,eventController.addFood_get);
-router.post("/profile/petProfile/:petId/addFood",eventController.addFood_post);
-router.get("/profile/petProfile/:petId/food",mid.loggedIn,eventController.showFood);
-router.get("/profile/petProfile/:petId/updateFood/:foodId",mid.loggedIn,eventController.updateFood_get);
-router.post("/profile/petProfile/:petId/updateFood/:foodId",eventController.updateFood_post);
-router.get("/profile/petProfile/:petId/deleteFood/:foodId",mid.loggedIn,eventController.deleteFood);
-
-router.get("/profile/petProfile/:petId/addTreatment",mid.loggedIn,eventController.addTreatment_get);
-router.post("/profile/petProfile/:petId/addTreatment",eventController.addTreatment_post);
-router.get("/profile/petProfile/:petId/treatments",mid.loggedIn,eventController.showTreatments);
-router.get("/profile/petProfile/:petId/updateTreatment/:treatmentId",mid.loggedIn,eventController.updateTreatment_get);
-router.post("/profile/petProfile/:petId/updateTreatment/:treatmentId",eventController.updateTreatment_post);
-router.get("/profile/petProfile/:petId/deleteTreatment/:treatmentId",mid.loggedIn,eventController.deleteTreatment);
+router.route("/pet/:petId/treatment")
+      .post(eventController.addTreatment)
+      .get(mid.loggedIn,eventController.showTreatments);
+router.route("/pet/:petId/treatment/:treatmentId")
+      .get(mid.loggedIn,eventController.findTreatment)
+      .put(eventController.updateTreatment)
+      .delete(mid.loggedIn,eventController.deleteTreatment);
 
 module.exports = router;
