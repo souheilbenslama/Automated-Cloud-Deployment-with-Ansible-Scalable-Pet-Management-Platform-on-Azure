@@ -37,7 +37,7 @@ exports.updateProfile = function(req,res,next){
                     if(err){
                         next(err);
                     }else{
-                        res.redirect("/profile");
+                        res.status(200).send("profile updated");
                     }
             });
         }

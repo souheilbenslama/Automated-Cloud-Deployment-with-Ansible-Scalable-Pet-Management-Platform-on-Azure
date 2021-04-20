@@ -25,7 +25,7 @@ exports.addPet = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            res.redirect("/profile/petProfile/"+pet._id);
+            res.status(200).send("pet added");
         }
     }); 
 }
@@ -64,7 +64,7 @@ exports.updatePetProfile = function(req,res,next){
                     if(err){
                         next(err);
                     }else{
-                        res.redirect("/profile/petProfile/"+pet._id);
+                        res.status(200).send("pet updated");
                     }
             });
         }
@@ -77,7 +77,7 @@ exports.deletePet = function(req,res,next){
             next(err);
         }
         else {
-            res.redirect("/profile/myPets");
+            res.status(200).send("pet deleted");
         }
     });
 }
