@@ -2,11 +2,11 @@ var Pet = require("../models/Pet");
 var exports = module.exports = {};
 
 exports.myPets = function(req,res,next){
-    Pet.find({owner:req.session.userId},function(error,result){
+    Pet.find({owner:req.session.userId},function(error,pets){
         if(error){
             return next(error);
         }else{
-            res.send({pets:result});
+            res.send(pets);
         }
     });
 }
@@ -78,6 +78,42 @@ exports.deletePet = function(req,res,next){
         }
         else {
             res.status(200).send("pet deleted");
+        }
+    });
+}
+
+exports.updateStatus = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(error){
+        if(error){
+            return next(error);
+        }else{
+            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                status : req.body.status
+                }},function(err){
+                    if(err){
+                        next(err);
+                    }else{
+                        res.status(200).send("pet put for adoption");
+                    }
+            });
+        }
+    });
+}
+
+exports.sold = function(req,res,next){
+    Pet.findById(req.params.petId).exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                owner:req.session.userId
+                }},function(err,pet){
+                    if(err){
+                        next(err);
+                    }else{
+                        res.status(200).send("pet sold");
+                    }
+            });
         }
     });
 }

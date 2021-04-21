@@ -11,7 +11,7 @@ exports.login = function(req, res, next) {
             res.status(401).send(err.message);
         }else{
             req.session.userId=user._id;
-            delete user["password"];
+            user.password=null;
             res.send(user);
         }
     });
@@ -39,7 +39,7 @@ exports.register = function(req, res, next) {
             return next(error);
         }else{
             req.session.userId=user._id;
-            delete user.password;
+            user.password=null;
             res.send(user);
         }
     }); 

@@ -89,4 +89,7 @@ router.route("/pet/:petId/treatment/:treatmentId")
       .put(eventController.updateTreatment)
       .delete(mid.loggedIn,eventController.deleteTreatment);
 
+router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);
+router.put("/pet/:petId/sold",mid.loggedIn,petsController.sold);
+
 module.exports = router;

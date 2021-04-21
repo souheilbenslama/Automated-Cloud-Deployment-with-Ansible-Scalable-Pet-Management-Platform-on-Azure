@@ -6,6 +6,7 @@ exports.profile = function(req, res, next) {
         if(error){
             return next(error);
         }else{
+            user.password = null;
             res.send(user);
         }
     });
@@ -16,6 +17,9 @@ exports.getUsers = function(req,res,next){
         if(error){
             return next(error);
         }else{
+            users.forEach(user => {
+                user.password=null;
+            });
             res.send(users);
         }
     });
