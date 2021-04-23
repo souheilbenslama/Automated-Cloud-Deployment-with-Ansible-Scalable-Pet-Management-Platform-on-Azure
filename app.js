@@ -12,14 +12,14 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
-mongoose.connect("mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test");
+mongoose.connect("mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/petsi");
 const db = mongoose.connection;
 
-app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test"})}));
+/* app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test"})}));
 app.use(function(req,res,next){
   res.locals.currentUser=req.session.userId;
   next();
-});
+}); */
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

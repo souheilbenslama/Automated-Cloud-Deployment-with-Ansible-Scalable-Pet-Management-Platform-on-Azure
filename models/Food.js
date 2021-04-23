@@ -6,7 +6,8 @@ var FoodSchema = new mongoose.Schema({
     quantity:{type:Number},
     done:{type:Boolean,default:false}
     //pet:{type:Schema.Types.ObjectId,ref:"Pet",required:true}
-});
+},
+{timestamps:true});
 
 var Food = mongoose.model("Food",FoodSchema);
 

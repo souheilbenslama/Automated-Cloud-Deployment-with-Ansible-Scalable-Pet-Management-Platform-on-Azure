@@ -16,7 +16,8 @@ var PetSchema = new mongoose.Schema({
     vaccine:[{type:mongoose.Schema.Types.ObjectId,ref:'Vaccine'}],
     treatment:[{type:mongoose.Schema.Types.ObjectId,ref:'Treatment'}]
     //owner:{type:String,required:true}
-});
+},
+{timestamps:true});
 
 var Pet = mongoose.model("Pet",PetSchema);
 

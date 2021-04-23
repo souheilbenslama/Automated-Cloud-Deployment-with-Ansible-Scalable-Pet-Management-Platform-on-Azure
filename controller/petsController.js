@@ -2,7 +2,7 @@ var Pet = require("../models/Pet");
 var exports = module.exports = {};
 
 exports.myPets = function(req,res,next){
-    Pet.find({owner:req.session.userId},function(error,pets){
+    Pet.find({owner:req.user._id},function(error,pets){
         if(error){
             return next(error);
         }else{
@@ -19,12 +19,13 @@ exports.addPet = function(req,res,next){
         birthday:req.body.birthday,
         sex:req.body.sex,
         weight:req.body.weight,
-        owner:req.session.userId
+        owner:req.user._id
     };
     Pet.create(petData,function(error,pet){ 
         if(error){
             return next(error);
         }else{
+            console.log("pet: "+pet);
             res.status(200).send("pet added");
         }
     }); 
@@ -106,7 +107,7 @@ exports.sold = function(req,res,next){
             return next(error);
         }else{
             Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                owner:req.session.userId
+                owner:req.user._id
                 }},function(err,pet){
                     if(err){
                         next(err);

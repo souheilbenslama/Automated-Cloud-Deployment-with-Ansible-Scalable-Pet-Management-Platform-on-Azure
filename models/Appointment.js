@@ -7,7 +7,8 @@ var AppointmentSchema = new mongoose.Schema({
     //pet:{type:Schema.Types.ObjectId,ref:"Pet",required:true},
     done:{type:Boolean,default:false},
     vet:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}
-});
+},
+{timestamps:true});
 
 var Appointment = mongoose.model("Appointment",AppointmentSchema);
 

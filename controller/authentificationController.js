@@ -3,6 +3,7 @@ var nodemailer = require("nodemailer");
 require("dotenv").config();
 var exports = module.exports = {};
 var smtpTransport = require("nodemailer-smtp-transport");
+var jwt = require("jsonwebtoken");
 
 exports.login = function(req, res, next) {
     User.authenticate(req.body.email,req.body.password,function(error,user){
@@ -10,9 +11,9 @@ exports.login = function(req, res, next) {
             var err = new Error("Wrong credentials!");
             res.status(401).send(err.message);
         }else{
-            req.session.userId=user._id;
+            var token = user.generateToken();
             user.password=null;
-            res.send(user);
+            res.send({user:user,token:token});
         }
     });
 }
@@ -38,21 +39,11 @@ exports.register = function(req, res, next) {
         if(error){
             return next(error);
         }else{
-            req.session.userId=user._id;
+            var token = user.generateToken();
             user.password=null;
-            res.send(user);
+            res.send({user:user,token:token});
         }
     }); 
-}
-
-exports.logout = function(req,res,next){
-    req.session.destroy(function(err){
-        if(err){
-            return next(err);
-        }else{
-            return res.status(200).send("logged out");
-        }
-    });
 }
   
 exports.forgetPassword = function(req,res,next){

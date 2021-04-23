@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 
 var UserSchema = new mongoose.Schema({
     name:{type:String,required:true,trim:true},
@@ -12,7 +13,8 @@ var UserSchema = new mongoose.Schema({
     birthday:{type:Date,required:true,trim:true},
     gender:{type:String},
     role:{type:String,required:true}
-});
+},
+{timestamps:true});
 
 UserSchema.statics.authenticate = function(email,password,callback){
     User.findOne({email:email}).exec(function(error,user){
@@ -32,6 +34,11 @@ UserSchema.statics.authenticate = function(email,password,callback){
         });
     });
 }
+
+UserSchema.methods.generateToken = function () {
+    return jwt.sign({_id:this._id},"petsiKey");
+}
+
 UserSchema.pre("save",function(next){
     var user = this;
     bcrypt.hash(user.password,10,function(err,hash){

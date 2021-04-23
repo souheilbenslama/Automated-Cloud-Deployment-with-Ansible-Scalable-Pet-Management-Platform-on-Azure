@@ -18,75 +18,73 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
 
-router.post('/login', authentificationController.login);
+router.post('/login',mid.loggedOut, authentificationController.login);
 
-router.post("/forgetPassword",authentificationController.forgetPassword)
+router.post("/forgetPassword",mid.loggedOut,authentificationController.forgetPassword);
 
-router.post("/resetPassword",authentificationController.resetPassword)
+router.put("/resetPassword",mid.loggedOut,authentificationController.resetPassword);
 
-router.post("/register",upload.single("avatar"),authentificationController.register);
+router.post("/register",mid.loggedOut,upload.single("avatar"),authentificationController.register);
 
 router.route("/profile")
       .get(mid.loggedIn,profileController.profile)
-      .put(upload.single("avatar"),profileController.updateProfile);
+      .put(mid.loggedIn,upload.single("avatar"),profileController.updateProfile);
 
 router.get("/getUsers",mid.loggedIn,profileController.getUsers);
 
-router.get("/logout",mid.loggedIn,authentificationController.logout);
-
 router.get("/myPets",mid.loggedIn,petsController.myPets);
-router.post("/addPet",upload.single("photo"),petsController.addPet);
+router.post("/addPet",mid.loggedIn,upload.single("photo"),petsController.addPet);
 router.route("/pet/:petId")
       .get(mid.loggedIn,petsController.petProfile)
-      .put(upload.single("photo"),petsController.updatePetProfile)
+      .put(mid.loggedIn,upload.single("photo"),petsController.updatePetProfile)
       .delete(mid.loggedIn,petsController.deletePet);
 
 router.route("/pet/:petId/appointment")
-      .post(eventController.addAppointment)
+      .post(mid.loggedIn,eventController.addAppointment)
       .get(mid.loggedIn,eventController.showAppointments);
 router.route("/pet/:petId/appointment/:appointmentId")
       .get(mid.loggedIn,eventController.findAppointment)
-      .put(eventController.updateAppointment)
+      .put(mid.loggedIn,eventController.updateAppointment)
       .delete(mid.loggedIn,eventController.deleteAppointment);
 
 router.route("/pet/:petId/bath")
-      .post(eventController.addBath)
+      .post(mid.loggedIn,eventController.addBath)
       .get(mid.loggedIn,eventController.showBaths);
 router.route("/pet/:petId/bath/:bathId")
       .get(mid.loggedIn,eventController.findBath)
-      .put(eventController.updateBath)
+      .put(mid.loggedIn,eventController.updateBath)
       .delete(mid.loggedIn,eventController.deleteBath);
 
 router.route("/pet/:petId/weight")
-      .post(eventController.addWeight)
+      .post(mid.loggedIn,eventController.addWeight)
       .get(mid.loggedIn,eventController.showWeights);
 router.route("/pet/:petId/weight/:weightId")
       .get(mid.loggedIn,eventController.findWeight)
-      .put(eventController.updateWeight)
+      .put(mid.loggedIn,eventController.updateWeight)
       .delete(mid.loggedIn,eventController.deleteWeight);
 
 router.route("/pet/:petId/vaccine")
-      .post(eventController.addVaccine)
+      .post(mid.loggedIn,eventController.addVaccine)
       .get(mid.loggedIn,eventController.showVaccines);
 router.route("/pet/:petId/vaccine/:vaccineId")
       .get(mid.loggedIn,eventController.findVaccine)
-      .put(eventController.updateVaccine)
+      .put(mid.loggedIn,eventController.updateVaccine)
       .delete(mid.loggedIn,eventController.deleteVaccine);
 
 router.route("/pet/:petId/food")
-      .post(eventController.addFood)
+      .post(mid.loggedIn,eventController.addFood)
       .get(mid.loggedIn,eventController.showFood);
 router.route("/pet/:petId/food/:foodId")
       .get(mid.loggedIn,eventController.findFood)
-      .put(eventController.updateFood)
+      .put(mid.loggedIn,eventController.updateFood)
       .delete(mid.loggedIn,eventController.deleteFood);
 
 router.route("/pet/:petId/treatment")
-      .post(eventController.addTreatment)
+      .post(mid.loggedIn,eventController.addTreatment)
       .get(mid.loggedIn,eventController.showTreatments);
 router.route("/pet/:petId/treatment/:treatmentId")
       .get(mid.loggedIn,eventController.findTreatment)
-      .put(eventController.updateTreatment)
+      .put(mid.loggedIn,eventController.updateTreatment)
       .delete(mid.loggedIn,eventController.deleteTreatment);
 
 router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);

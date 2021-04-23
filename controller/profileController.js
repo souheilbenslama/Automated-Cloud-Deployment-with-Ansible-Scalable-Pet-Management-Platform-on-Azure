@@ -1,8 +1,9 @@
+const { token } = require("morgan");
 var User = require("../models/User");
 var exports = module.exports = {};
 
 exports.profile = function(req, res, next) {
-    User.findById(req.session.userId).exec(function(error,user){
+    User.findById(req.user._id).exec(function(error,user){
         if(error){
             return next(error);
         }else{
@@ -26,12 +27,12 @@ exports.getUsers = function(req,res,next){
 }
 
 exports.updateProfile = function(req,res,next){
-    User.findById(req.session.userId).exec(function(error,user){
+    User.findById(req.user._id).exec(function(error,user){
         if(error){
             return next(error);
         }else{
             var defaultAvatar = user.avatar;
-            User.findOneAndUpdate({_id:req.session.userId},{$set:{
+            User.findOneAndUpdate({_id:req.user._id},{$set:{
                 name:req.body.name,
                 surname:req.body.surname,
                 email:req.body.email,

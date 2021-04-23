@@ -6,7 +6,8 @@ var TreatmentSchema = new mongoose.Schema({
     description:{type:String},
     done:{type:Boolean,default:false}
     //pet:{type:Schema.Types.ObjectId,ref:"Pet",required:true}
-});
+},
+{timestamps:true});
 
 var Treatment = mongoose.model("Treatment",TreatmentSchema);
 

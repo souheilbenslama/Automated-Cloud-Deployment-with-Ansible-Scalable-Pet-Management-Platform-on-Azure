@@ -7,7 +7,8 @@ var VaccineSchema = new mongoose.Schema({
     done:{type:Boolean,default:false},
     //pet:{type:String,required:true}
     vet:{type:mongoose.Schema.Types.ObjectId,ref:"Pet",required:true}
-});
+},
+{timestamps:true});
 
 var Vaccine = mongoose.model("Vaccine",VaccineSchema);
 
