@@ -23,6 +23,14 @@ exports.register = function(req, res, next) {
         var err = new Error("Passwords do not match");
         res.status(400).send(err.message);
     }
+    User.find({email:req.body.email},function(error,users){
+        if(error){
+            return next(error);
+        }else{
+            res.status(401).send("email already exists");
+        }
+    });
+    if(req.body.email)
     var userData = {
         name:req.body.name,
         surname:req.body.surname,
