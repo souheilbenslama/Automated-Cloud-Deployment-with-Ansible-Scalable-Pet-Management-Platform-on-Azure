@@ -1,4 +1,5 @@
 var Pet = require("../models/Pet");
+var Weight = require("../models/Weight");
 var exports = module.exports = {};
 
 exports.myPets = function(req,res,next){
@@ -18,14 +19,35 @@ exports.addPet = function(req,res,next){
         breed:req.body.breed,
         birthday:req.body.birthday,
         sex:req.body.sex,
-        weight:req.body.weight,
         owner:req.user._id
     };
+    var weightData={
+        weight:req.body.weight,
+        date:Date()
+    }
+    console.log(weightData);
     Pet.create(petData,function(error,pet){ 
         if(error){
             return next(error);
         }else{
-            console.log("pet: "+pet);
+            Weight.create(weightData,function(error,weight){ 
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findById(pet._id).exec(function(error,pet){
+                        if(error){
+                            return next(error);
+                        }else{
+                            Pet.findOneAndUpdate({_id:pet._id},{$push:{
+                                weight:weight._id}},function(err){
+                                    if(err){
+                                        next(err);
+                                    }
+                            });
+                        }
+                    });
+                }
+            });
             res.status(200).send("pet added");
         }
     }); 

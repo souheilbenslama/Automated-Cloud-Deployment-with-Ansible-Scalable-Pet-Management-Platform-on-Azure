@@ -7,7 +7,7 @@ var PetSchema = new mongoose.Schema({
     breed:{type:String,required:true,trim:true},
     birthday:{type:Date,required:true},
     sex:{type:String,required:true},
-    weight:{type: Number},
+    weight:[{type:mongoose.Schema.Types.ObjectId,ref:'Weight'}],
     status:{type:String},
     owner:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true},
     food:[{type:mongoose.Schema.Types.ObjectId,ref:'Food'}],
