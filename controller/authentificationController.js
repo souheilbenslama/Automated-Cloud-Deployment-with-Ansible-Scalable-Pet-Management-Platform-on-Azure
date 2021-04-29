@@ -17,41 +17,48 @@ exports.login = function(req, res, next) {
         }
     });
 }
-
 exports.register = function(req, res, next) {
     if(req.body.password !== req.body.confirmPassword){
         var err = new Error("Passwords do not match");
-        res.status(400).send(err.message);
+        return res.status(400).send(err.message);
     }
     User.find({email:req.body.email},function(error,users){
         if(error){
             return next(error);
+        }else if(users.length > 0){
+            return res.status(401).send("email already exists");
         }else{
-            res.status(401).send("email already exists");
+            User.find({phone:req.body.phone},function(error,users){
+                if(error){
+                    return next(error);
+                }else if(users.length>0){
+                    return res.status(401).send("phone already exists");
+                }else{
+                    var userData = {
+                        name:req.body.name,
+                        surname:req.body.surname,
+                        email:req.body.email,
+                        password:req.body.password,
+                        avatar:(req.file)?"uploads/" + req.file.filename:"images/avatar.jpg",
+                        adress:req.body.adress || "empty",
+                        phone:req.body.phone,
+                        birthday:req.body.birthday,
+                        gender:req.body.gender || "empty",
+                        role:req.body.role
+                    };
+                    User.create(userData,function(error,user){ 
+                        if(error){
+                            return next(error);
+                        }else{
+                            var token = user.generateToken();
+                            user.password=null;
+                            return res.send({user:user,token:token});
+                        }
+                    });
+                }
+            }); 
         }
     });
-    if(req.body.email)
-    var userData = {
-        name:req.body.name,
-        surname:req.body.surname,
-        email:req.body.email,
-        password:req.body.password,
-        avatar:(req.file)?"uploads/" + req.file.filename:"images/avatar.jpg",
-        adress:req.body.adress || "empty",
-        phone:req.body.phone,
-        birthday:req.body.birthday,
-        gender:req.body.gender || "empty",
-        role:req.body.role
-    };
-    User.create(userData,function(error,user){ 
-        if(error){
-            return next(error);
-        }else{
-            var token = user.generateToken();
-            user.password=null;
-            res.send({user:user,token:token});
-        }
-    }); 
 }
   
 exports.forgetPassword = function(req,res,next){
