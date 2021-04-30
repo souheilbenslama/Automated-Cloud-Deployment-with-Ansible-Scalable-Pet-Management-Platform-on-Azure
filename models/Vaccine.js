@@ -5,8 +5,7 @@ var VaccineSchema = new mongoose.Schema({
     date:{type:Date,required:true},
     description:{type:String},
     done:{type:Boolean,default:false},
-    //pet:{type:String,required:true}
-    vet:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}
+    vet:{type:mongoose.Schema.Types.ObjectId,ref:"User"}
 },
 {timestamps:true});
 

@@ -9,7 +9,7 @@ const { response } = require("express");
 var exports = module.exports = {};
 
 exports.findAppointment = function(req,res,next){
-    Appointment.findById(req.params.appointmentId).exec(function(err,appointment){
+    Appointment.findById(req.params.appointmentId).populate("vet").exec(function(err,appointment){
         if(err){
             return next(err);
         }else{
@@ -82,7 +82,7 @@ exports.deleteAppointment = function(req,res,next){
 }
 
 exports.findVaccine = function(req,res,next){
-    Vaccine.findById(req.params.vaccineId).exec(function(err,vaccine){
+    Vaccine.findById(req.params.vaccineId).populate("vet").exec(function(err,vaccine){
         if(err){
             return next(err);
         }else{

@@ -15,7 +15,6 @@ var PetSchema = new mongoose.Schema({
     appointment:[{type:mongoose.Schema.Types.ObjectId,ref:'Appointment'}],
     vaccine:[{type:mongoose.Schema.Types.ObjectId,ref:'Vaccine'}],
     treatment:[{type:mongoose.Schema.Types.ObjectId,ref:'Treatment'}]
-    //owner:{type:String,required:true}
 },
 {timestamps:true});
 

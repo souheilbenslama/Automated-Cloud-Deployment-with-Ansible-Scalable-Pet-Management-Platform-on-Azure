@@ -5,7 +5,6 @@ var FoodSchema = new mongoose.Schema({
     date:{type:Date,required:true},
     quantity:{type:Number},
     done:{type:Boolean,default:false}
-    //pet:{type:Schema.Types.ObjectId,ref:"Pet",required:true}
 },
 {timestamps:true});
 

@@ -5,6 +5,7 @@ var authentificationController = require("../controller/authentificationControll
 var profileController = require("../controller/profileController");
 var petsController = require("../controller/petsController");
 var eventController = require("../controller/eventController");
+var vetController = require("../controller/vetController");
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -31,6 +32,7 @@ router.route("/profile")
       .put(mid.loggedIn,upload.single("avatar"),profileController.updateProfile);
 
 router.get("/getUsers",mid.loggedIn,profileController.getUsers);
+router.get("/getVets",mid.loggedIn,vetController.getVets);
 
 router.get("/myPets",mid.loggedIn,petsController.myPets);
 router.post("/addPet",mid.loggedIn,upload.single("photo"),petsController.addPet);
