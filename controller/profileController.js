@@ -31,19 +31,27 @@ exports.updateProfile = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            var defaultAvatar = user.avatar;
-            User.findOneAndUpdate({_id:req.user._id},{$set:{
-                name:req.body.name,
-                surname:req.body.surname,
-                email:req.body.email,
-                adress:req.body.adress,
-                avatar:(req.file)?"uploads/" + req.file.filename:defaultAvatar,
-                phone:req.body.phone}},function(err){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("profile updated");
-                    }
+            User.find({phone:req.body.phone,_id: {$ne: user._id}},function(err,users){
+                if(err){
+                    err.message = "phone not saved";
+                    return next(err.message);
+                }else if(users.length > 0){
+                    return res.status(401).send("phone already exists");
+                }else{
+                    var defaultAvatar = user.avatar;
+                    User.findOneAndUpdate({_id:req.user._id},{$set:{
+                        name:req.body.name,
+                        surname:req.body.surname,
+                        adress:req.body.adress,
+                        avatar:(req.file)?"uploads/" + req.file.filename:defaultAvatar,
+                        phone:req.body.phone}},function(err){
+                            if(err){
+                                next(err);
+                            }else{
+                                res.status(200).send(user);
+                            }
+                    });
+                }
             });
         }
     });

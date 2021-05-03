@@ -1,4 +1,3 @@
-var Pet = require("../models/Pet");
 var Appointment = require("../models/Appointment");
 var Bath = require("../models/Bath");
 var Food = require("../models/Food");
@@ -9,7 +8,7 @@ const { response } = require("express");
 var exports = module.exports = {};
 
 exports.findAppointment = function(req,res,next){
-    Appointment.findById(req.params.appointmentId).populate("vet").exec(function(err,appointment){
+    Appointment.findById(req.params.appointmentId).populate("vet").populate("pet").exec(function(err,appointment){
         if(err){
             return next(err);
         }else{
@@ -18,33 +17,21 @@ exports.findAppointment = function(req,res,next){
     });
 }
 exports.addAppointment = function(req,res,next){
+    req.body.pet = req.params.petId;
     Appointment.create(req.body,function(error,appointment){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        appointment:appointment._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("appointment added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("appointment added");
         }
     }); 
 }
 exports.showAppointments = function(req,res,next){
-    Pet.findById(req.params.petId).populate("appointment").exec(function(error,pet){
+    Appointment.find({pet:req.params.petId}).exec(function(error,appointments){
         if(error){
             return next(error);
         }else{
-            res.send(pet.appointment);
+            res.send(appointments);
         }
     });
 }
@@ -65,24 +52,18 @@ exports.updateAppointment = function(req,res,next){
     });
 }
 exports.deleteAppointment = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {appointment: req.params.appointmentId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Appointment.remove({ _id: req.params.appointmentId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("appointment deleted");
-                }
-            });
+    Appointment.remove({ _id: req.params.appointmentId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("appointment deleted");
         }
     });
 }
 
 exports.findVaccine = function(req,res,next){
-    Vaccine.findById(req.params.vaccineId).populate("vet").exec(function(err,vaccine){
+    Vaccine.findById(req.params.vaccineId).populate("vet").populate("pet").exec(function(err,vaccine){
         if(err){
             return next(err);
         }else{
@@ -91,33 +72,21 @@ exports.findVaccine = function(req,res,next){
     });
 }
 exports.addVaccine = function(req,res,next){
+    req.body.pet = req.params.petId;
     Vaccine.create(req.body,function(error,vaccine){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        vaccine:vaccine._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("vaccine added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("vaccine added");
         }
     });
 }
 exports.showVaccines = function(req,res,next){
-    Pet.findById(req.params.petId).populate("vaccine").exec(function(error,pet){
+    Vaccine.find({pet:req.params.petId}).exec(function(error,vaccines){
         if(error){
             return next(error);
         }else{
-            res.send(pet.vaccine);
+            res.send(vaccines);
         }
     });
 }
@@ -126,40 +95,29 @@ exports.updateVaccine = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Vaccine.findOneAndUpdate({_id:req.params.vaccineId},{$set:{
-                name:req.body.name,
-                date:req.body.date,
-                description:req.body.description,
-                vet:req.body.vet
-                }},function(err,vaccine){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("vaccine modified");
-                    }
+            Vaccine.findOneAndUpdate({_id:req.params.vaccineId},{$set:req.body},function(err,vaccine){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("vaccine modified");
+                }
             });
         }
     });
 }
 exports.deleteVaccine = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {vaccine: req.params.vaccineId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Vaccine.remove({ _id: req.params.vaccineId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("vaccine deleted");
-                }
-            });
+    Vaccine.remove({ _id: req.params.vaccineId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("vaccine deleted");
         }
     });
 }
 
 exports.findFood = function(req,res,next){
-    Food.findById(req.params.foodId).exec(function(err,food){
+    Food.findById(req.params.foodId).populate("pet").exec(function(err,food){
         if(err){
             return next(err);
         }else{
@@ -168,33 +126,21 @@ exports.findFood = function(req,res,next){
     });
 }
 exports.addFood = function(req,res,next){
+    req.body.pet = req.params.petId;
     Food.create(req.body,function(error,food){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        food:food._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("food added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("food added");
         }
     });
 }
 exports.showFood = function(req,res,next){
-    Pet.findById(req.params.petId).populate("food").exec(function(error,pet){
+    Food.find({pet:req.params.petId}).exec(function(error,food){
         if(error){
             return next(error);
         }else{
-            res.send(pet.food);
+            res.send(food);
         }
     });
 }
@@ -203,39 +149,29 @@ exports.updateFood = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Food.findOneAndUpdate({_id:req.params.foodId},{$set:{
-                name:req.body.name,
-                date:req.body.date,
-                quantity:req.body.quantity
-                }},function(err,food){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("food modified");
-                    }
+            Food.findOneAndUpdate({_id:req.params.foodId},{$set:req.body},function(err,food){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("food modified");
+                }
             });
         }
     });
 }
 exports.deleteFood = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {food: req.params.foodId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Food.remove({ _id: req.params.foodId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("food deleted");
-                }
-            });
+    Food.remove({ _id: req.params.foodId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("food deleted");
         }
     });
 }
 
 exports.findBath = function(req,res,next){
-    Bath.find({_id:req.params.bathId}).exec(function(err,bath){
+    Bath.find({_id:req.params.bathId}).populate("pet").exec(function(err,bath){
         if(err){
             return next(err);
         }else{
@@ -244,33 +180,21 @@ exports.findBath = function(req,res,next){
     });
 }
 exports.addBath = function(req,res,next){
+    req.body.pet = req.params.petId;
     Bath.create(req.body,function(error,bath){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        bath:bath._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("bath added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("bath added");
         }
     }); 
 }
 exports.showBaths = function(req,res,next){
-    Pet.findById(req.params.petId).populate("bath").exec(function(error,pet){
+    Bath.find({pet:req.params.petId}).exec(function(error,baths){
         if(error){
             return next(error);
         }else{
-            res.send(pet.bath);
+            res.send(baths);
         }
     });
 }
@@ -279,38 +203,29 @@ exports.updateBath = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Bath.findOneAndUpdate({_id:bath._id},{$set:{
-                date:req.body.date,
-                description:req.body.description
-                }},function(err,bath){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("bath modified");
-                    }
+            Bath.findOneAndUpdate({_id:bath._id},{$set:req.body},function(err,bath){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("bath modified");
+                }
             });
         }
     });
 }
 exports.deleteBath = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {bath: req.params.bathId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Bath.remove({ _id: req.params.bathId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("bath deleted");
-                }
-            });
+    Bath.remove({ _id: req.params.bathId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("bath deleted");
         }
     });
 }
 
 exports.findWeight = function(req,res,next){
-    Weight.findById(req.params.weightId).exec(function(err,weight){
+    Weight.findById(req.params.weightId).populate("pet").exec(function(err,weight){
         if(err){
             return next(err);
         }else{
@@ -319,33 +234,21 @@ exports.findWeight = function(req,res,next){
     });
 }
 exports.addWeight = function(req,res,next){
+    req.body.pet = req.params.petId;
     Weight.create(req.body,function(error,weight){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        weight:weight._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("weight added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("weight added");
         }
     }); 
 }
 exports.showWeights = function(req,res,next){
-    Pet.findById(req.params.petId).populate("weight").exec(function(error,pet){
+    Weight.find({pet:req.params.petId}).exec(function(error,weights){
         if(error){
             return next(error);
         }else{
-            res.send(pet.weight);
+            res.send(weights);
         }
     });
 }
@@ -354,38 +257,29 @@ exports.updateWeight = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Weight.findOneAndUpdate({_id:weight._id},{$set:{
-                date:req.body.date,
-                description:req.body.description
-                }},function(err,weight){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("weight modified");
-                    }
+            Weight.findOneAndUpdate({_id:weight._id},{$set:req.body},function(err,weight){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("weight modified");
+                }
             });
         }
     });
 }
 exports.deleteWeight = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {weight: req.params.weightId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Bath.remove({ _id: req.params.weightId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("weight deleted");
-                }
-            });
+    Weight.remove({ _id: req.params.weightId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("weight deleted");
         }
     });
 }
 
 exports.findTreatment = function(req,res,next){
-    Treatment.findById(req.params.treatmentId).exec(function(err,treatment){
+    Treatment.findById(req.params.treatmentId).populate("pet").exec(function(err,treatment){
         if(err){
             return next(err);
         }else{
@@ -394,33 +288,21 @@ exports.findTreatment = function(req,res,next){
     });
 }
 exports.addTreatment = function(req,res,next){
+    req.body.pet = req.params.petId;
     Treatment.create(req.body,function(error,treatment){ 
         if(error){
             return next(error);
         }else{
-            Pet.findById(req.params.petId).exec(function(error,pet){
-                if(error){
-                    return next(error);
-                }else{
-                    Pet.findOneAndUpdate({_id:pet._id},{$push:{
-                        treatment:treatment._id}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send("treatment added");
-                            }
-                    });
-                }
-            });
+            res.status(200).send("treatment added");
         }
     });
 }
 exports.showTreatments = function(req,res,next){
-    Pet.findById(req.params.petId).populate("treatment").exec(function(error,pet){
+    Treatment.find({pet:req.params.petId}).exec(function(error,treatments){
         if(error){
             return next(error);
         }else{
-            res.send(pet.treatment);
+            res.send(treatments);
         }
     });
 }
@@ -429,33 +311,23 @@ exports.updateTreatment = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            Treatment.findOneAndUpdate({_id:req.params.treatmentId},{$set:{
-                type:req.body.type,
-                date:req.body.date,
-                description:req.body.description
-                }},function(err,treatment){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("treatment modified");
-                    }
+            Treatment.findOneAndUpdate({_id:req.params.treatmentId},{$set:req.body},function(err,treatment){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("treatment modified");
+                }
             });
         }
     });
 }
 exports.deleteTreatment = function(req,res,next){
-    Pet.findOneAndUpdate({_id: req.params.petId},{$pull: {treatment: req.params.treatmentId}}, function (err) {
-        if(err){
-            return next(err);
-        }else{
-            Treatment.remove({ _id: req.params.treatmentId }, function(err) {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    res.status(200).send("treatment deleted");
-                }
-            });
+    Treatment.remove({ _id: req.params.treatmentId }, function(err) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.status(200).send("treatment deleted");
         }
     });
 }

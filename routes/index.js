@@ -22,8 +22,8 @@ var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
 router.post('/login',mid.loggedOut, authentificationController.login);
 
 router.post("/forgetPassword",mid.loggedOut,authentificationController.forgetPassword);
-
-router.put("/resetPassword",mid.loggedOut,authentificationController.resetPassword);
+router.post("/verifyCode",mid.loggedOut,authentificationController.verifyCode);
+router.put("/resetPassword",mid.loggedIn,authentificationController.resetPassword);
 
 router.post("/register",mid.loggedOut,upload.single("avatar"),authentificationController.register);
 
@@ -36,6 +36,8 @@ router.get("/getVets",mid.loggedIn,vetController.getVets);
 
 router.get("/myPets",mid.loggedIn,petsController.myPets);
 router.post("/addPet",mid.loggedIn,upload.single("photo"),petsController.addPet);
+router.post("/petsForSale",petsController.getForSale);
+router.post("/petsForAdoption",petsController.getForAdoption);
 router.route("/pet/:petId")
       .get(mid.loggedIn,petsController.petProfile)
       .put(mid.loggedIn,upload.single("photo"),petsController.updatePetProfile)

@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-const User = require("./User");
+
 
 var PetSchema = new mongoose.Schema({
     name:{type:String,required:true,trim:true},
@@ -7,14 +7,9 @@ var PetSchema = new mongoose.Schema({
     breed:{type:String,required:true,trim:true},
     birthday:{type:Date,required:true},
     sex:{type:String,required:true},
-    weight:[{type:mongoose.Schema.Types.ObjectId,ref:'Weight'}],
-    status:{type:String},
-    owner:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true},
-    food:[{type:mongoose.Schema.Types.ObjectId,ref:'Food'}],
-    bath:[{type:mongoose.Schema.Types.ObjectId,ref:'Bath'}],
-    appointment:[{type:mongoose.Schema.Types.ObjectId,ref:'Appointment'}],
-    vaccine:[{type:mongoose.Schema.Types.ObjectId,ref:'Vaccine'}],
-    treatment:[{type:mongoose.Schema.Types.ObjectId,ref:'Treatment'}]
+    weight:{type:Number,required:true},
+    status:{type:String,default:"o"},
+    owner:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true}
 },
 {timestamps:true});
 
