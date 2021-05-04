@@ -27,7 +27,7 @@ exports.addAppointment = function(req,res,next){
     }); 
 }
 exports.showAppointments = function(req,res,next){
-    Appointment.find({pet:req.params.petId}).exec(function(error,appointments){
+    Appointment.find({pet:req.params.petId}).populate('vet').exec(function(error,appointments){
         if(error){
             return next(error);
         }else{
@@ -82,7 +82,7 @@ exports.addVaccine = function(req,res,next){
     });
 }
 exports.showVaccines = function(req,res,next){
-    Vaccine.find({pet:req.params.petId}).exec(function(error,vaccines){
+    Vaccine.find({pet:req.params.petId}).populate("vet").exec(function(error,vaccines){
         if(error){
             return next(error);
         }else{
