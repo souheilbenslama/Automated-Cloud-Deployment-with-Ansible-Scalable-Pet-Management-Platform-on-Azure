@@ -121,11 +121,9 @@ exports.updatePetProfile = function(req,res,next){
             return next(error);
         }else{
             var defaultPhoto = pet.photo;
-            var oldWeight = pet.weight;
             Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
                 name:req.body.name,
                 breed:req.body.breed,
-                weight:req.body.weight,
                 photo:(req.file)?"uploads/" + req.file.filename:defaultPhoto,
                 birthday:req.body.birthday,
                 sex:req.body.sex
@@ -133,20 +131,8 @@ exports.updatePetProfile = function(req,res,next){
                     if(err){
                         next(err);
                     }else{
-                        if(req.body.weight != oldWeight){
-                            var weightData={
-                                weight:req.body.weight,
-                                date:Date(),
-                                pet:pet._id
-                            }
-                            Weight.create(weightData,function(error){ 
-                                if(error){
-                                    return next(error);
-                                }else{
-                                    res.status(200).send("pet updated");
-                                }
-                            });
-                        }
+                        res.status(200).send("pet updated");
+                        
                     }
                 }
             );
@@ -207,24 +193,6 @@ exports.updateStatus = function(req,res,next){
                         next(err);
                     }else{
                         res.status(200).send("pet put for adoption");
-                    }
-            });
-        }
-    });
-}
-
-exports.sold = function(req,res,next){
-    Pet.findById(req.params.petId).exec(function(error,pet){
-        if(error){
-            return next(error);
-        }else{
-            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                owner:req.user._id
-                }},function(err,pet){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("pet sold");
                     }
             });
         }

@@ -5,6 +5,7 @@ var Treatment = require("../models/Treatment");
 var Vaccine = require("../models/Vaccine");
 var Weight = require("../models/Weight");
 const { response } = require("express");
+const Pet = require("../models/Pet");
 var exports = module.exports = {};
 
 exports.findAppointment = function(req,res,next){
@@ -211,7 +212,7 @@ exports.updateBath = function(req,res,next){
                 }
             });
         }
-    });
+    }); 
 }
 exports.deleteBath = function(req,res,next){
     Bath.remove({ _id: req.params.bathId }, function(err) {
@@ -237,11 +238,27 @@ exports.addWeight = function(req,res,next){
     req.body.pet = req.params.petId;
     Weight.create(req.body,function(error,weight){ 
         if(error){
-            return next(error);
+            error.message="wrong data! weight can't be created!";
+            return next(error.message);
         }else{
-            res.status(200).send("weight added");
+            Pet.findById(req.params.petId).exec(function(error){
+                if(error){
+                    error.message ="pet not found";
+                    return next(error.message);
+                }else{
+                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                        weight:weight.weight,
+                    }},function(err){
+                        if(err){
+                            next(err);
+                        }else{
+                            res.status(200).send("weight added");
+                        }
+                    });
+                }
+            }); 
         }
-    }); 
+    });
 }
 exports.showWeights = function(req,res,next){
     Weight.find({pet:req.params.petId}).exec(function(error,weights){

@@ -6,6 +6,7 @@ var profileController = require("../controller/profileController");
 var petsController = require("../controller/petsController");
 var eventController = require("../controller/eventController");
 var vetController = require("../controller/vetController");
+var offerController = require("../controller/offerController");
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -92,6 +93,19 @@ router.route("/pet/:petId/treatment/:treatmentId")
       .delete(mid.loggedIn,eventController.deleteTreatment);
 
 router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);
-router.put("/pet/:petId/sold",mid.loggedIn,petsController.sold);
+
+router.route("/pet/:petId/offer")
+      .post(mid.loggedIn,offerController.addOffer)
+      .get(mid.loggedIn,offerController.findPetOffer);
+router.get("/offers",offerController.showOffers);
+router.get("/adoptionOffers",offerController.showAdoptionOffers);
+router.get("/saleOffers",offerController.showSaleOffers);
+router.route("/pet/:petId/offer/:offerId")
+      .get(mid.loggedIn,offerController.findOffer)
+      .put(mid.loggedIn,offerController.updateOffer)
+      .delete(mid.loggedIn,offerController.deleteOffer);
+router.put("/offer/:offerId",mid.loggedIn,offerController.sendOffer);
+router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
+
 
 module.exports = router;
