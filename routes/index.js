@@ -7,6 +7,7 @@ var petsController = require("../controller/petsController");
 var eventController = require("../controller/eventController");
 var vetController = require("../controller/vetController");
 var offerController = require("../controller/offerController");
+var messageController = require("../controller/messageController");
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -107,5 +108,8 @@ router.route("/pet/:petId/offer/:offerId")
 router.put("/offer/:offerId",mid.loggedIn,offerController.sendOffer);
 router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
 
+router.route("/message/:receiverId")
+      .get(mid.loggedIn,messageController.getmessages)
+      .post(mid.loggedIn,messageController.sendMessage);
 
 module.exports = router;

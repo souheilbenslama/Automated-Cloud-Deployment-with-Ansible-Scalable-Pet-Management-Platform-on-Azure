@@ -15,12 +15,12 @@ exports.findOffer = function(req,res,next){
 }
 
 exports.findPetOffer = function(req,res,next){
-    Offer.find({pet:req.params.petId}).populate("pet").populate("buyers").exec(function(err,offer){
+    Offer.find({pet:req.params.petId}).populate("pet").populate("buyers").exec(function(err,offers){
         if(err){
             err.message = "offer not found";
             return next(err.message);
         }else{
-            res.send(offer);
+            res.send(offers);
         }
     });
 }
@@ -32,7 +32,21 @@ exports.addOffer = function(req,res,next){
             error.message="wrong data! offer can't be created!";
             return next(error.message);
         }else{
-            res.status(200).send("offer created");
+            Pet.findById(req.params.petId).exec(function(error){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                        status : offer.type
+                        }},function(err){
+                            if(err){
+                                return next(err);
+                            }else{
+                                res.status(200).send("offer created");
+                            }
+                    });
+                }
+            });
         }
     }); 
 }
@@ -49,7 +63,7 @@ exports.showOffers = function(req,res,next){
 }
 
 exports.showSaleOffers = function(req,res,next){
-    Offer.find({type:"For Sale"}).populate('pet').exec(function(error,offers){
+    Offer.find({type:"s"}).populate('pet').exec(function(error,offers){
         if(error){
             error.message="offers not found!"
             return next(error.message);
@@ -60,7 +74,7 @@ exports.showSaleOffers = function(req,res,next){
 }
 
 exports.showAdoptionOffers = function(req,res,next){
-    Offer.find({type:"For Adoption"}).populate('pet').exec(function(error,offers){
+    Offer.find({type:"a"}).populate('pet').exec(function(error,offers){
         if(error){
             error.message="offers not found!"
             return next(error.message);
@@ -76,10 +90,25 @@ exports.updateOffer = function(req,res,next){
             error.message="offer not found!";
             return next(error.message);
         }else{
-            Offer.findOneAndUpdate({_id:offer._id},{$set:req.body},function(err){
+            Offer.findOneAndUpdate({_id:offer._id},{$set:req.body},function(err,offer){
                 if(err){
                     next(err);
                 }else{
+                    if(req.body.type){
+                        Pet.findById(req.params.petId).exec(function(error){
+                            if(error){
+                                return next(error);
+                            }else{
+                                Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                                    status : offer.type
+                                    }},function(err){
+                                        if(err){
+                                            return next(err);
+                                        }
+                                });
+                            }
+                        });
+                    }
                     res.status(200).send("offer updated");
                 }
             });
@@ -118,7 +147,8 @@ exports.confirmOffer = function(req,res,next){
                     return next(error);
                 }else{
                     Pet.findOneAndUpdate({_id:pet._id},{$set:{
-                        owner:req.body.buyer
+                        owner:req.body.buyer,
+                        type:"o"
                         }},function(err){
                             if(err){
                                 next(err);
@@ -148,7 +178,21 @@ exports.deleteOffer = function(req,res,next){
             next(err.message);
         }
         else {
-            res.status(200).send("offer deleted");
+            Pet.findById(req.params.petId).exec(function(error){
+                if(error){
+                    return next(error);
+                }else{
+                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                        status : "o"
+                        }},function(err){
+                            if(err){
+                                return next(err);
+                            }else{
+                                res.status(200).send("offer deleted");
+                            }
+                    });
+                }
+            });
         }
     });
 }

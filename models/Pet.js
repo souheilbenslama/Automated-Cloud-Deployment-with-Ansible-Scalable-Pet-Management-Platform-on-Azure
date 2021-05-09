@@ -4,7 +4,8 @@ var mongoose = require("mongoose");
 var PetSchema = new mongoose.Schema({
     name:{type:String,required:true,trim:true},
     photo:{type:String},
-    breed:{type:String,required:true,trim:true},
+    type:{type:String,required:true,trim:true},
+    breed:{type:String,trim:true},
     birthday:{type:Date,required:true},
     sex:{type:String,required:true},
     weight:{type:Number,required:true},

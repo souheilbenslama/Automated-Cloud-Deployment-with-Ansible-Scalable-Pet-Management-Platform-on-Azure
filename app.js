@@ -3,10 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var bodyParser = require("body-parser");
+//var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-var session = require("express-session");
-var MongoStore = require("connect-mongo") ;
+//var MongoStore = require("connect-mongo") ;
 var indexRouter = require('./routes/index');
 //var indexRouter = require('./routes/admin');
 
@@ -21,9 +20,9 @@ app.use(function(req,res,next){
   next();
 }); */
 
-// view engine setup
+/* view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'jade'); */
 
 app.use(logger('dev'));
 app.use(express.json());
