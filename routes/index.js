@@ -102,7 +102,7 @@ router.get("/offers",offerController.showOffers);
 router.get("/adoptionOffers",offerController.showAdoptionOffers);
 router.get("/saleOffers",offerController.showSaleOffers);
 router.route("/pet/:petId/offer/:offerId")
-      .get(mid.loggedIn,offerController.findOffer)
+      .get(offerController.findOffer)
       .put(mid.loggedIn,offerController.updateOffer)
       .delete(mid.loggedIn,offerController.deleteOffer);
 router.put("/offer/:offerId",mid.loggedIn,offerController.sendOffer);

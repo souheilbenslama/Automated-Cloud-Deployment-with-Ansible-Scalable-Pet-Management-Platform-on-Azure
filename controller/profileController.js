@@ -39,17 +39,13 @@ exports.updateProfile = function(req,res,next){
                     return res.status(401).send("phone already exists");
                 }else{
                     var defaultAvatar = user.avatar;
-                    User.findOneAndUpdate({_id:req.user._id},{$set:{
-                        name:req.body.name,
-                        surname:req.body.surname,
-                        adress:req.body.adress,
-                        avatar:(req.file)?"uploads/" + req.file.filename:defaultAvatar,
-                        phone:req.body.phone}},function(err){
-                            if(err){
-                                next(err);
-                            }else{
-                                res.status(200).send(user);
-                            }
+                    req.body.avatar = (req.file)?"uploads/" + req.file.filename:defaultAvatar;
+                    User.findOneAndUpdate({_id:req.user._id},{$set:req.body},function(err){
+                        if(err){
+                            next(err);
+                        }else{
+                            res.status(200).send(user);
+                        }
                     });
                 }
             });

@@ -35,19 +35,8 @@ exports.register = function(req, res, next) {
                 }else if(users.length>0){
                     return res.status(401).send("phone already exists");
                 }else{
-                    var userData = {
-                        name:req.body.name,
-                        surname:req.body.surname,
-                        email:req.body.email,
-                        password:req.body.password,
-                        avatar:(req.file)?"uploads/" + req.file.filename:"images/avatar.jpg",
-                        adress:req.body.adress || "empty",
-                        phone:req.body.phone,
-                        birthday:req.body.birthday,
-                        gender:req.body.gender || "empty",
-                        role:req.body.role
-                    };
-                    User.create(userData,function(error,user){ 
+                    req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/avatar.jpg";
+                    User.create(req.body,function(error,user){ 
                         if(error){
                             return next(error);
                         }else{

@@ -9,7 +9,7 @@ var PetSchema = new mongoose.Schema({
     birthday:{type:Date,required:true},
     sex:{type:String,required:true},
     weight:{type:Number,required:true},
-    status:{type:String,default:"o"},
+    status:{type:String,default:"o",required:true},
     owner:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true}
 },
 {timestamps:true});

@@ -18,19 +18,11 @@ exports.myPets = function(req,res,next){
 }
 
 exports.addPet = function(req,res,next){
-    var petData = {
-        name:req.body.name,
-        photo:(req.file)?"uploads/" + req.file.filename:"images/avatar.jpg",
-        breed:req.body.breed,
-        birthday:req.body.birthday,
-        weight:req.body.weight,
-        sex:req.body.sex,
-        owner:req.user._id
-    };
-    Pet.create(petData,function(error,pet){ 
+    req.body.photo = (req.file)?"uploads/" + req.file.filename:"images/avatar.jpg";
+    req.body.owner=req.user._id;
+    Pet.create(req.body,function(error,pet){ 
         if(error){
-            error.message="wrong pet data";
-            return next(error.message);
+            return next(error);
         }else{
             var weightData={
                 weight:req.body.weight,
@@ -45,7 +37,7 @@ exports.addPet = function(req,res,next){
                 }
             });
         }
-    }); 
+    });
 }
 
 exports.petProfile = function(req,res,next){
@@ -121,21 +113,15 @@ exports.updatePetProfile = function(req,res,next){
             return next(error);
         }else{
             var defaultPhoto = pet.photo;
-            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                name:req.body.name,
-                breed:req.body.breed,
-                photo:(req.file)?"uploads/" + req.file.filename:defaultPhoto,
-                birthday:req.body.birthday,
-                sex:req.body.sex
-                }},function(err,pet){
-                    if(err){
-                        next(err);
-                    }else{
-                        res.status(200).send("pet updated");
-                        
-                    }
+            req.body.photo = (req.file)?"uploads/" + req.file.filename:defaultPhoto;
+            Pet.findOneAndUpdate({_id:req.params.petId},{$set:req.body},function(err){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("pet updated");
+                    
                 }
-            );
+            });
         }
     });
 }
