@@ -15,7 +15,7 @@ exports.findOffer = function(req,res,next){
 }
 
 exports.findPetOffer = function(req,res,next){
-    Offer.find({pet:req.params.petId}).populate("pet").populate("buyers").exec(function(err,offers){
+    Offer.find({pet:req.params.petId}).populate({path:"pet",populate:{path:"owner"}}).populate("buyers").exec(function(err,offers){
         if(err){
             err.message = "offer not found";
             return next(err.message);
@@ -52,7 +52,7 @@ exports.addOffer = function(req,res,next){
 }
 
 exports.showOffers = function(req,res,next){
-    Offer.find().populate('pet').exec(function(error,offers){
+    Offer.find().populate({path:"pet",populate:{path:"owner"}}).exec(function(error,offers){
         if(error){
             error.message="offers not found!"
             return next(error.message);
@@ -63,7 +63,7 @@ exports.showOffers = function(req,res,next){
 }
 
 exports.showSaleOffers = function(req,res,next){
-    Offer.find({type:"s"}).populate('pet').exec(function(error,offers){
+    Offer.find({type:"s"}).populate({path:"pet",populate:{path:"owner"}}).exec(function(error,offers){
         if(error){
             error.message="offers not found!"
             return next(error.message);
@@ -74,7 +74,7 @@ exports.showSaleOffers = function(req,res,next){
 }
 
 exports.showAdoptionOffers = function(req,res,next){
-    Offer.find({type:"a"}).populate('pet').exec(function(error,offers){
+    Offer.find({type:"a"}).populate({path:"pet",populate:{path:"owner"}}).exec(function(error,offers){
         if(error){
             error.message="offers not found!"
             return next(error.message);
