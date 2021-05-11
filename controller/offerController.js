@@ -148,7 +148,7 @@ exports.confirmOffer = function(req,res,next){
                 }else{
                     Pet.findOneAndUpdate({_id:pet._id},{$set:{
                         owner:req.body.buyer,
-                        type:"o"
+                        status:"o"
                         }},function(err){
                             if(err){
                                 next(err);
