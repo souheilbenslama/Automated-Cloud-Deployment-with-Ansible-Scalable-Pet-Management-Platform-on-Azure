@@ -106,6 +106,7 @@ router.route("/pet/:petId/offer/:offerId")
       .put(mid.loggedIn,offerController.updateOffer)
       .delete(mid.loggedIn,offerController.deleteOffer);
 router.put("/offer/:offerId",mid.loggedIn,offerController.sendOffer);
+router.put("/cancelOffer/:offerId",mid.loggedIn,offerController.cancelOffer);
 router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
 
 router.route("/message/:receiverId")

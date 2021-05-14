@@ -136,6 +136,26 @@ exports.sendOffer = function(req,res,next){
     });
 }
 
+exports.cancelOffer = function(req,res,next){
+    Offer.findById(req.params.offerId,function(error,offer){
+        if(error){
+            error.message="offer not found!";
+            return next(error.message);
+        }else{
+            Offer.findOneAndUpdate({_id:offer._id},{$pull:{
+                buyers:req.user._id
+                }},function(err){
+                    if(err){
+                        next(err);
+                    }else{
+                        res.status(200).send("request canceled");
+                    }
+                }
+            );
+        }
+    });
+}
+
 exports.confirmOffer = function(req,res,next){
     Offer.findById(req.params.offerId).exec(function(error,offer){
         if(error){

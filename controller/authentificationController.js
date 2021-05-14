@@ -35,7 +35,13 @@ exports.register = function(req, res, next) {
                 }else if(users.length>0){
                     return res.status(401).send("phone already exists");
                 }else{
-                    req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/avatar.jpg";
+                    if(req.body.gender == "Male"){
+                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/male.png";
+                    }else if(req.body.gender == "Female"){
+                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/female.png";
+                    }else{
+                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/default.jpg";
+                    }
                     User.create(req.body,function(error,user){ 
                         if(error){
                             return next(error);
