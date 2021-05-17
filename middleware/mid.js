@@ -1,4 +1,6 @@
 var jwt = require("jsonwebtoken");
+const Dossier = require("../models/Dossier");
+const User = require("../models/User");
 
 function loggedOut(req,res,next){
     const token = req.headers["authorization"];
@@ -19,5 +21,44 @@ function loggedIn(req,res,next){
     }
 }
 
+function vetAccess(req,res,next){
+    Dossier.findById(req.params.dossierId).exec(function(err,dossier){
+        if(err){
+            return next(err);
+        }else if(!dossier.confirm){
+                return res.status(403).send("not authorized");
+        }else{
+            return next();
+        }
+    });
+}
+
+function verifyVet(req,res,next){
+    User.findById(req.user._id).exec(function(err,user){
+        if(err){
+            return next(err);
+        }else if(user.role != "Veterinary"){
+                return res.status(403).send("not authorized");
+        }else{
+            return next();
+        }
+    });
+}
+
+function verifyPetOwner(req,res,next){
+    User.findById(req.user._id).exec(function(err,user){
+        if(err){
+            return next(err);
+        }else if(user.role != "Pet Owner"){
+                return res.status(403).send("not authorized");
+        }else{
+            return next();
+        }
+    });
+}
+
 module.exports.loggedOut = loggedOut;
 module.exports.loggedIn = loggedIn;
+module.exports.vetAccess = vetAccess;
+module.exports.verifyVet = verifyVet;
+module.exports.verifyPetOwner = verifyPetOwner;

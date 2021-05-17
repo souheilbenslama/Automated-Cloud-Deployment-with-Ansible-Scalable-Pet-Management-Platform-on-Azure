@@ -5,6 +5,7 @@ var Food = require("../models/Food");
 var Treatment = require("../models/Treatment");
 var Vaccine = require("../models/Vaccine");
 var Weight = require("../models/Weight");
+const Offer = require("../models/Offer");
 var exports = module.exports = {};
 
 exports.myPets = function(req,res,next){
@@ -46,7 +47,6 @@ exports.petProfile = function(req,res,next){
             err.message="pet not found";
             return next(err.message);
         }else{
-            console.log(new Date());
             Bath.find({pet:pet._id,date:{$gte:new Date()}},function(err,baths){
                 if(err){
                     err.message="bath not found";
@@ -127,42 +127,23 @@ exports.updatePetProfile = function(req,res,next){
 }
 
 exports.deletePet = function(req,res,next){
-    Pet.remove({ _id: req.params.petId }, function(err,pet) {
-        if (err) {
-            next(err);
-        }
-        else {
-            Treatment.remove({ pet:pet._id }, function(err) {
+    Pet.findById(req.params.petId).exec(function(error,pet){
+        if(error){
+            return next(error);
+        }else{
+            Pet.findOneAndUpdate({ _id: req.params.petId },{$set:{owner:null,status:"l"}}, function(err,pet) {
                 if (err) {
                     next(err);
                 }
-            });
-            Appointment.remove({ pet:pet._id }, function(err) {
-                if (err) {
-                    next(err);
+                else {
+                    Offer.remove({ pet: pet._id }, function(err) {
+                        if (err) {
+                            return next(err);
+                        }
+                    });
+                    res.status(200).send("pet deleted");
                 }
             });
-            Bath.remove({ pet:pet._id }, function(err) {
-                if (err) {
-                    next(err);
-                }
-            });
-            Food.remove({ pet:pet._id }, function(err) {
-                if (err) {
-                    next(err);
-                }
-            });
-            Vaccine.remove({ pet:pet._id }, function(err) {
-                if (err) {
-                    next(err);
-                }
-            });
-            Weight.remove({ pet:pet._id }, function(err) {
-                if (err) {
-                    next(err);
-                }
-            });
-            res.status(200).send("pet deleted");
         }
     });
 }

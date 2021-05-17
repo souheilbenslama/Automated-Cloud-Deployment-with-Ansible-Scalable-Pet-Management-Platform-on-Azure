@@ -8,6 +8,7 @@ var eventController = require("../controller/eventController");
 var vetController = require("../controller/vetController");
 var offerController = require("../controller/offerController");
 var messageController = require("../controller/messageController");
+var dossierController = require("../controller/dossierController");
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -112,5 +113,14 @@ router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
 router.route("/message/:receiverId")
       .get(mid.loggedIn,messageController.getmessages)
       .post(mid.loggedIn,messageController.sendMessage);
+
+router.route("/dossier/:dossierId")
+      .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
+      .put(mid.loggedIn,mid.verifyPetOwner,dossierController.giveAccess)
+      .delete(mid.loggedIn,dossierController.cancelRequest);
+router.route("/dossier/:dossierId/addRapport",mid.loggedIn,mid.vetAccess,mid.verifyVet,dossierController.addRapport);
+router.get("/dossiers",mid.loggedIn,dossierController.getDossiers);
+router.get("/dossiersOnHold",mid.loggedIn,mid.verifyVet,dossierController.requestsOnHold);
+router.post("/pet/:petId/dossier",mid.loggedIn,mid.verifyVet,dossierController.requestDossier);
 
 module.exports = router;
