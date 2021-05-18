@@ -114,6 +114,9 @@ router.route("/message/:receiverId")
       .get(mid.loggedIn,messageController.getmessages)
       .post(mid.loggedIn,messageController.sendMessage);
 
+router.route("/messages")
+      .get(mid.loggedIn,messageController.getallmessages)    
+
 router.route("/dossier/:dossierId")
       .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
       .put(mid.loggedIn,mid.verifyPetOwner,dossierController.giveAccess)

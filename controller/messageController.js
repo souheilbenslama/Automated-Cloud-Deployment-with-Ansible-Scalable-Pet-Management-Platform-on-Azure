@@ -5,7 +5,7 @@ var Message = require("../models/Message");
 var exports = module.exports = {};
 
 exports.getmessages = function(req,res,next){
-    Message.find({sender:req.user._id,receiver:req.paramas.receiverId},function(err, messages) {
+    Message.find().or([{sender:req.user._id,receiver:req.paramas.receiverId},{sender:req.paramas.receiverId,receiver:req.user._id}],function(err, messages) {
         if(err){
             return next(err);
         }else{
@@ -13,6 +13,20 @@ exports.getmessages = function(req,res,next){
         }
     });
 }
+
+exports.getallmessages = function(req,res,next){
+    console.log('hello from Messages')
+    Message.find({sender:req.user._id},function(err, messages) {
+        if(err){
+            console.log(err)
+            return next(err);
+        }else{
+            console.log(messages)
+            res.send(messages);
+        }
+    });
+}
+
 
 exports.sendMessage = function(req,res,next){
     req.body.sender = req.user._id;
