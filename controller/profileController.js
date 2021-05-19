@@ -44,6 +44,7 @@ exports.updateProfile = function(req,res,next){
                         if(err){
                             next(err);
                         }else{
+                            user.password = null;
                             res.status(200).send(user);
                         }
                     });

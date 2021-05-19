@@ -1,5 +1,6 @@
 var jwt = require("jsonwebtoken");
 const Dossier = require("../models/Dossier");
+const Follow = require("../models/Follow");
 const User = require("../models/User");
 
 function loggedOut(req,res,next){
@@ -57,8 +58,21 @@ function verifyPetOwner(req,res,next){
     });
 }
 
+function verifyFollow(req,res,next){
+    Follow.find({follower:req.user._id,followed:req.params.receiverId,confirm:true},function(err,follow){
+        if(err){
+            return next(err);
+        }else if(follow.length <= 0){
+            return res.status(403).send("not authorized");
+        }else{
+            return next();
+        }
+    });
+}
+
 module.exports.loggedOut = loggedOut;
 module.exports.loggedIn = loggedIn;
 module.exports.vetAccess = vetAccess;
 module.exports.verifyVet = verifyVet;
 module.exports.verifyPetOwner = verifyPetOwner;
+module.exports.verifyFollow = verifyFollow;

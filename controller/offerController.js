@@ -4,7 +4,7 @@ const Pet = require("../models/Pet");
 var exports = module.exports = {};
 
 exports.findOffer = function(req,res,next){
-    Offer.findById(req.params.offerId).populate({path:"pet",populate:{path:"owner"}}).populate("buyers").exec(function(err,offer){
+    Offer.findById(req.params.offerId).populate({path:"pet",populate:{path:"owner"}}).populate("buyers",{"password":0}).exec(function(err,offer){
         if(err){
             err.message = "offer not found";
             return next(err.message);
@@ -15,7 +15,7 @@ exports.findOffer = function(req,res,next){
 }
 
 exports.findPetOffer = function(req,res,next){
-    Offer.find({pet:req.params.petId}).populate({path:"pet",populate:{path:"owner"}}).populate("buyers").exec(function(err,offers){
+    Offer.find({pet:req.params.petId}).populate({path:"pet",populate:{path:"owner"}}).populate("buyers",{"password":0}).exec(function(err,offers){
         if(err){
             err.message = "offer not found";
             return next(err.message);

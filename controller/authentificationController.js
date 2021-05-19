@@ -19,9 +19,13 @@ exports.login = function(req, res, next) {
     });
 }
 exports.register = function(req, res, next) {
-    if(req.body.password !== req.body.confirmPassword){
+    if(req.body.password !== req.body.confirmPassword ){
         var err = new Error("Passwords do not match");
         return res.status(400).send(err.message);
+    }
+    if(req.body.password.length<4 ){
+        var error = new Error("Passwords too short! Minimum length is 4");
+        return res.status(400).send(error.message);
     }
     User.find({email:req.body.email},function(error,users){
         if(error){

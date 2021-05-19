@@ -9,6 +9,7 @@ var vetController = require("../controller/vetController");
 var offerController = require("../controller/offerController");
 var messageController = require("../controller/messageController");
 var dossierController = require("../controller/dossierController");
+var followController = require("../controller/followController");
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -112,17 +113,27 @@ router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
 
 router.route("/message/:receiverId")
       .get(mid.loggedIn,messageController.getmessages)
-      .post(mid.loggedIn,messageController.sendMessage);
+      .post(mid.loggedIn,mid.verifyFollow,messageController.sendMessage);
 router.route("/messages")
       .get(mid.loggedIn,messageController.getallmessages)    
 
 router.route("/dossier/:dossierId")
       .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
-      .put(mid.loggedIn,mid.verifyPetOwner,dossierController.giveAccess)
+      .put(mid.loggedIn,mid.vetAccess,dossierController.giveAccess)
       .delete(mid.loggedIn,dossierController.cancelRequest);
 router.route("/dossier/:dossierId/addRapport",mid.loggedIn,mid.vetAccess,mid.verifyVet,dossierController.addRapport);
-router.get("/dossiers",mid.loggedIn,dossierController.getDossiers);
-router.get("/dossiersOnHold",mid.loggedIn,mid.verifyVet,dossierController.requestsOnHold);
-router.post("/pet/:petId/dossier",mid.loggedIn,mid.verifyVet,dossierController.requestDossier);
+router.get("/dossiers",mid.loggedIn,mid.verifyVet,mid.vetAccess,dossierController.getDossiers);
+router.get("/dossiersOnHold",mid.loggedIn,mid.verifyPetOwner,dossierController.requestsOnHold);
+router.post("/pet/:petId/dossier",mid.loggedIn,mid.verifyPetOwner,dossierController.requestVet);
+
+router.route("/follow/:userId")
+      .get(mid.loggedIn,followController.visitUser)
+      .post(mid.loggedIn,followController.follow)
+      .delete(mid.loggedIn,followController.cancelFollow)
+router.put("/confirmFollow/:followId",mid.loggedIn,followController.confirmFollow);
+router.get("/followers",mid.loggedIn,followController.followers);
+router.get("/follows",mid.loggedIn,followController.follows);
+router.get("/requestsOnHold",mid.loggedIn,followController.requestsOnHold);
+router.get("/requests",mid.loggedIn,followController.requests);
 
 module.exports = router;
