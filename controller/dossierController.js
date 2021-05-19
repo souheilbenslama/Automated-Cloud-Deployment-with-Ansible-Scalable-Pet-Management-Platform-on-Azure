@@ -58,46 +58,26 @@ exports.getDossier = function(req,res,next){
                             err.message="bath not found";
                             next(err.message);
                         }else{
-                            /* if(!baths){
-                                baths = [];
-                            }
-                            baths.sort(function(a,b){return a.date-b.date;});*/
                             Food.find({pet:pet._id,date:{$lte:limit}},function(err,food){
                                 if(err){
                                     err.message="food not found";
                                     next(err.message);
                                 }else{
-                                    /* if(!food){
-                                        food = [];
-                                    }
-                                    food.sort(function(a,b){return a.date-b.date;}); */
                                     Appointment.find({pet:pet._id,date:{$lte:limit}},function(err,appointments){
                                         if(err){
                                             err.message="appointment not found";
                                             next(err.message);
                                         }else{
-                                            /* if(!appointments){
-                                                appointments = [];
-                                            }
-                                            appointments.sort(function(a,b){return a.date-b.date;}); */
                                             Treatment.find({pet:pet._id,date:{$lte:limit}},function(err,treatments){
                                                 if(err){
                                                     err.message="treatment not found";
                                                     next(err.message);
                                                 }else{
-                                                    /* if(!treatments){
-                                                        treatments = [];
-                                                    }
-                                                    treatments.sort(function(a,b){return a.date-b.date;}); */
                                                     Vaccine.find({pet:pet._id,date:{$lte:limit}},function(err,vaccines){
                                                         if(err){
                                                             err.message="vaccine not found";
                                                             next(err.message);
                                                         }else{
-                                                            /* if(!vaccines){
-                                                                vaccines = [];
-                                                            }
-                                                            vaccines.sort(function(a,b){return a.date-b.date;}); */
                                                             return res.send({pet:pet,bath:baths,food:food,appointment:appointments,Treatment:treatments,vaccine:vaccines});
                                                         }
                                                     });
@@ -170,6 +150,23 @@ exports.addRapport = function(req,res,next){
                 }else{
                     res.status(200).send("rapport updated");
                     
+                }
+            });
+        }
+    });
+}
+
+exports.closeDossier = function(req,res,next){
+    Dossier.find({pet:req.params.petId,confirm:true},function(err,dossier){
+        if(err){
+            err.message ="dossier not found!";
+            return next(err.message);
+        }else{
+            Dossier.findOneAndUpdate({_id:dossier._id},{$set:{status:"close"}},function(err){
+                if(err){
+                    next(err);
+                }else{
+                    res.status(200).send("dossier closed");
                 }
             });
         }

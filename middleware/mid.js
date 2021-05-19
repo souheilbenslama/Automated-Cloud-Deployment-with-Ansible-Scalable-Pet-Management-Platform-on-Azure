@@ -34,6 +34,18 @@ function vetAccess(req,res,next){
     });
 }
 
+function dossierOpen(req,res,next){
+    Dossier.findById(req.params.dossierId).exec(function(err,dossier){
+        if(err){
+            return next(err);
+        }else if(dossier.status == "close"){
+                return res.status(403).send("not authorized");
+        }else{
+            return next();
+        }
+    });
+}
+
 function verifyVet(req,res,next){
     User.findById(req.user._id).exec(function(err,user){
         if(err){
@@ -73,6 +85,7 @@ function verifyFollow(req,res,next){
 module.exports.loggedOut = loggedOut;
 module.exports.loggedIn = loggedIn;
 module.exports.vetAccess = vetAccess;
+module.exports.dossierOpen = dossierOpen;
 module.exports.verifyVet = verifyVet;
 module.exports.verifyPetOwner = verifyPetOwner;
 module.exports.verifyFollow = verifyFollow;

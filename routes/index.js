@@ -119,12 +119,14 @@ router.route("/messages")
 
 router.route("/dossier/:dossierId")
       .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
-      .put(mid.loggedIn,mid.vetAccess,dossierController.giveAccess)
+      .put(mid.loggedIn,mid.verifyVet,mid.dossierOpen,dossierController.giveAccess)
       .delete(mid.loggedIn,dossierController.cancelRequest);
-router.route("/dossier/:dossierId/addRapport",mid.loggedIn,mid.vetAccess,mid.verifyVet,dossierController.addRapport);
+router.route("/addRapport/:dossierId",mid.loggedIn,mid.vetAccess,mid.verifyVet,mid.dossierOpen,dossierController.addRapport);
 router.get("/dossiers",mid.loggedIn,mid.verifyVet,mid.vetAccess,dossierController.getDossiers);
 router.get("/dossiersOnHold",mid.loggedIn,mid.verifyPetOwner,dossierController.requestsOnHold);
-router.post("/pet/:petId/dossier",mid.loggedIn,mid.verifyPetOwner,dossierController.requestVet);
+router.route("/dossier/:petId")
+      .post(mid.loggedIn,mid.verifyPetOwner,dossierController.requestVet)
+      .put(mid.loggedIn,dossierController.closeDossier);
 
 router.route("/follow/:userId")
       .get(mid.loggedIn,followController.visitUser)
