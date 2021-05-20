@@ -157,8 +157,9 @@ exports.addRapport = function(req,res,next){
 }
 
 exports.closeDossier = function(req,res,next){
-    Dossier.find({pet:req.params.petId,confirm:true},function(err,dossier){
+    Dossier.findOne({pet:req.params.petId,confirm:true},function(err,dossier){
         if(err){
+            console.log(err)
             err.message ="dossier not found!";
             return next(err.message);
         }else{
