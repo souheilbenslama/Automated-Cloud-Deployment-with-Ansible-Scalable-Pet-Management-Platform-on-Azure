@@ -10,7 +10,9 @@ var offerController = require("../controller/offerController");
 var messageController = require("../controller/messageController");
 var dossierController = require("../controller/dossierController");
 var followController = require("../controller/followController");
+var localizationController = require("../controller/localizationController");
 var multer = require('multer');
+const { route } = require('../app');
 
 var storage = multer.diskStorage({
   destination:function(req,file,callback){
@@ -122,20 +124,23 @@ router.route("/dossier/:dossierId")
       .put(mid.loggedIn,mid.verifyVet,mid.dossierOpen,dossierController.giveAccess)
       .delete(mid.loggedIn,dossierController.cancelRequest);
 router.route("/addRapport/:dossierId",mid.loggedIn,mid.vetAccess,mid.verifyVet,mid.dossierOpen,dossierController.addRapport);
-router.get("/dossiers",mid.loggedIn,mid.verifyVet,mid.vetAccess,dossierController.getDossiers);
+router.get("/dossiers",mid.loggedIn,mid.verifyVet,dossierController.getDossiers);
 router.get("/dossiersOnHold",mid.loggedIn,mid.verifyPetOwner,dossierController.requestsOnHold);
 router.route("/dossier/:petId")
       .post(mid.loggedIn,mid.verifyPetOwner,dossierController.requestVet)
       .put(mid.loggedIn,dossierController.closeDossier);
+router.get("/dossierRequests",mid.loggedIn,mid.verifyVet,dossierController.requests);
 
 router.route("/follow/:userId")
       .get(mid.loggedIn,followController.visitUser)
       .post(mid.loggedIn,followController.follow)
-      .delete(mid.loggedIn,followController.cancelFollow)
+      .delete(mid.loggedIn,followController.cancelFollow);
 router.put("/confirmFollow/:followId",mid.loggedIn,followController.confirmFollow);
 router.get("/followers",mid.loggedIn,followController.followers);
 router.get("/follows",mid.loggedIn,followController.follows);
 router.get("/requestsOnHold",mid.loggedIn,followController.requestsOnHold);
 router.get("/requests",mid.loggedIn,followController.requests);
+
+router.get("/localization",mid.loggedIn,localizationController.getLocalization);
 
 module.exports = router;

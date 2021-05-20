@@ -20,7 +20,7 @@ exports.getDossiers = function(req,res,next){
 }
 
 exports.requests = function(req,res,next){
-    Dossier.find({vet:req.user._id,confirm:true}).populate("pet").exec(function(err,dossiers){
+    Dossier.find({vet:req.user._id,confirm:false}).populate("pet").exec(function(err,dossiers){
         if(err){
             err.message = "dossier not found!";
             return next(err.message);
@@ -97,7 +97,7 @@ exports.getDossier = function(req,res,next){
 
 exports.requestVet = function(req,res,next){
     var dossierData = {
-        vet:req.params.vetId,
+        vet:req.body.vet,
         pet:req.params.petId
     };
     Dossier.create(dossierData,function(error){ 
