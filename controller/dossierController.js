@@ -9,7 +9,7 @@ const Dossier = require("../models/Dossier");
 var exports = module.exports = {};
 
 exports.getDossiers = function(req,res,next){
-    Dossier.find({vet:req.user._id,confirm:true}).populate("pet").exec(function(err,dossiers){
+    Dossier.find({vet:req.user._id,confirm:true}).populate({path:"pet",populate:{path:"owner"}}).exec(function(err,dossiers){
         if(err){
             err.message = "dossier not found!";
             return next(err.message);
@@ -20,7 +20,7 @@ exports.getDossiers = function(req,res,next){
 }
 
 exports.requests = function(req,res,next){
-    Dossier.find({vet:req.user._id,confirm:false}).populate("pet").exec(function(err,dossiers){
+    Dossier.find({vet:req.user._id,confirm:false}).populate({path:"pet",populate:{path:"owner"}}).exec(function(err,dossiers){
         if(err){
             err.message = "dossier not found!";
             return next(err.message);
@@ -31,7 +31,7 @@ exports.requests = function(req,res,next){
 }
 
 exports.requestsOnHold = function(req,res,next){
-    Dossier.find({pet:req.params.petId,confirm:false}).populate("pet").exec(function(err,dossiers){
+    Dossier.find({pet:req.params.petId,confirm:false}).populate({path:"pet",populate:{path:"owner"}}).exec(function(err,dossiers){
         if(err){
             err.message = "dossier not found!";
             return next(err.message);
