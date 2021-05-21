@@ -124,7 +124,7 @@ router.route("/dossier/:dossierId")
       .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
       .put(mid.loggedIn,mid.verifyVet,mid.dossierOpen,dossierController.giveAccess)
       .delete(mid.loggedIn,dossierController.cancelRequest);
-router.route("/addRapport/:dossierId",mid.loggedIn,mid.vetAccess,mid.verifyVet,mid.dossierOpen,dossierController.addRapport);
+router.put("/addRapport/:dossierId",mid.loggedIn,mid.vetAccess,mid.verifyVet,mid.dossierOpen,dossierController.addRapport);
 router.get("/dossiers",mid.loggedIn,mid.verifyVet,dossierController.getDossiers);
 router.get("/dossiersOnHold",mid.loggedIn,mid.verifyPetOwner,dossierController.requestsOnHold);
 router.route("/pet/:petId/dossier")
