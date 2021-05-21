@@ -78,7 +78,7 @@ exports.getDossier = function(req,res,next){
                                                             err.message="vaccine not found";
                                                             next(err.message);
                                                         }else{
-                                                            return res.send({pet:pet,bath:baths,food:food,appointment:appointments,Treatment:treatments,vaccine:vaccines});
+                                                            return res.send({dossier:dossier,pet:pet,bath:baths,food:food,appointment:appointments,Treatment:treatments,vaccine:vaccines});
                                                         }
                                                     });
                                                 }
