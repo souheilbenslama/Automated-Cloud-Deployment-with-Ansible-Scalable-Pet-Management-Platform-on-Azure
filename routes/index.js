@@ -101,7 +101,7 @@ router.route("/pet/:petId/treatment/:treatmentId")
 router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);
 
 router.route("/post")
-      .post(mid.loggedIn, postController.addPost)
+      .post(mid.loggedIn,upload.single("photo"), postController.addPost)
       .get(mid.loggedIn, postController.myPosts)
 
 router.route("/post/:id")

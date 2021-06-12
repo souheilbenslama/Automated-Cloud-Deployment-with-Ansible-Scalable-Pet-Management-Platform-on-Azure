@@ -241,18 +241,28 @@ exports.addWeight = function(req,res,next){
             error.message="wrong data! weight can't be created!";
             return next(error.message);
         }else{
+
             Pet.findById(req.params.petId).exec(function(error){
                 if(error){
                     error.message ="pet not found";
                     return next(error.message);
                 }else{
-                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                        weight:weight.weight,
-                    }},function(err){
-                        if(err){
+                    var date = new Date();
+                    console.log(Date(date.setHours( 0 )*1000));
+                    Weight.remove({ createdAt:{ $gte:date.setHours( 0,0,0,0 ), $lte: date } }, function(err) {
+                        if (err) {
                             next(err);
-                        }else{
-                            res.status(200).send("weight added");
+                        }
+                        else {
+                            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                                weight:weight.weight,
+                            }},function(err){
+                                if(err){
+                                    next(err);
+                                }else{
+                                    res.status(200).send("weight added");
+                                }
+                            });
                         }
                     });
                 }
