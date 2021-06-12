@@ -5,6 +5,7 @@ var authentificationController = require("../controller/authentificationControll
 var profileController = require("../controller/profileController");
 var petsController = require("../controller/petsController");
 var eventController = require("../controller/eventController");
+var postController = require("../controller/postController");
 var vetController = require("../controller/vetController");
 var offerController = require("../controller/offerController");
 var messageController = require("../controller/messageController");
@@ -98,6 +99,14 @@ router.route("/pet/:petId/treatment/:treatmentId")
       .delete(mid.loggedIn,eventController.deleteTreatment);
 
 router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);
+
+router.route("/post")
+      .post(mid.loggedIn, postController.addPost)
+      .get(mid.loggedIn, postController.myPosts)
+
+router.route("/post/:id")
+      .delete(mid.loggedIn, postController.deletePost)
+
 
 router.route("/pet/:petId/offer")
       .post(mid.loggedIn,offerController.addOffer)
