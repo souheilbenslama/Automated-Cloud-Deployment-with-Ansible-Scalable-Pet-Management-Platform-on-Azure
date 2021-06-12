@@ -4,12 +4,7 @@ const Follow = require("../models/Follow");
 const User = require("../models/User");
 
 function loggedOut(req,res,next){
-    const token = req.headers["authorization"];
-    if(typeof token !== "undefined"){
-        return res.status(403).send("not authorized");
-    }else{
         return next(); 
-    }
 }
 
 function loggedIn(req,res,next){

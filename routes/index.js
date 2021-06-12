@@ -120,7 +120,6 @@ router.route("/messages")
       .get(mid.loggedIn,messageController.getallmessages)    
 
 router.route("/dossier/:dossierId")
-      .post(mid.loggedIn,mid.verifyPetOwner,dossierController.requestVet)
       .get(mid.loggedIn,mid.vetAccess,dossierController.getDossier)
       .put(mid.loggedIn,mid.verifyVet,mid.dossierOpen,dossierController.giveAccess)
       .delete(mid.loggedIn,dossierController.cancelRequest);
