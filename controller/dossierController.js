@@ -140,11 +140,12 @@ exports.giveAccess = function(req,res,next){
 }
 
 exports.addRapport = function(req,res,next){
-    Dossier.findById(req.params.dossierId).exec(function(error){
+    Dossier.findById(req.params.dossierId).exec(function(error,doss){
         if(error){
             return next(error);
         }else{
-            Pet.findOneAndUpdate({_id:req.params.dossierId},{$set:req.body},function(err){
+            var r = doss.rapport+"\n"+req.body.rapport;
+            Dossier.findOneAndUpdate({_id:req.params.dossierId},{$set:{rapport:r}},function(err,dossier){
                 if(err){
                     next(err);
                 }else{
