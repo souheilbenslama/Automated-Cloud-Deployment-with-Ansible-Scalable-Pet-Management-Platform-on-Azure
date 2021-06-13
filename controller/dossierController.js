@@ -144,8 +144,7 @@ exports.addRapport = function(req,res,next){
         if(error){
             return next(error);
         }else{
-            var r = doss.rapport+"\n"+req.body.rapport;
-            Dossier.findOneAndUpdate({_id:req.params.dossierId},{$set:{rapport:r}},function(err,dossier){
+            Dossier.findOneAndUpdate({_id:req.params.dossierId},{$set:{rapport:req.body.rapport}},function(err,dossier){
                 if(err){
                     next(err);
                 }else{
