@@ -16,13 +16,130 @@ var localizationController = require("../controller/localizationController");
 var multer = require('multer');
 const { route } = require('../app');
 
-var storage = multer.diskStorage({
+
+const { StorageSharedKeyCredential,
+      BlobServiceClient } = require('@azure/storage-blob');
+  const {AbortController} = require('@azure/abort-controller');
+  const fs = require("fs");
+  const path = require("path");
+
+  const STORAGE_ACCOUNT_NAME = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  const ACCOUNT_ACCESS_KEY = process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY;
+
+  
+  const ONE_MEGABYTE = 1024 * 1024;
+  const FOUR_MEGABYTES = 4 * ONE_MEGABYTE;
+  const ONE_MINUTE = 60 * 1000;
+  
+
+  async function uploadLocalFile(aborter, containerClient, filePath) {
+      filePath = path.resolve(filePath);
+  
+      const fileName = path.basename(filePath);
+  
+      const blobClient = containerClient.getBlobClient(fileName);
+      const blobOptions = { blobHTTPHeaders: { "blobContentType": 'image/jpg', "Content-Disposition": "binary" } };
+      const blockBlobClient = blobClient.getBlockBlobClient();
+            
+      return await blockBlobClient.uploadFile(filePath,blobOptions);
+  }
+
+
+  
+async function execute(filepath) {
+
+      const containerName = "petsiblob";
+      const blobName = "quickstart.txt";      
+      const localFilePath = filepath;
+  
+      const credentials = new StorageSharedKeyCredential(STORAGE_ACCOUNT_NAME, ACCOUNT_ACCESS_KEY);
+      const blobServiceClient = new BlobServiceClient(`https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,credentials);
+          blobServiceClient.setProperties
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+      containerClient.setMetadata
+      const blobClient = containerClient.getBlobClient(blobName);
+      const blockBlobClient = blobClient.getBlockBlobClient();
+      
+      const aborter = AbortController.timeout(30 * ONE_MINUTE);
+  
+      await uploadLocalFile(aborter, containerClient, localFilePath);
+      console.log(`Local file "${localFilePath}" is uploaded`);
+  
+  }
+  
+  
+  
+
+
+/*
+// AZURE STORAGE PArt 
+const {
+      Aborter,
+      BlobURL,
+      BlockBlobURL,
+      ContainerURL,
+      ServiceURL,
+      StorageSharedKeyCredential,
+      StorageURL,
+      uploadStreamToBlockBlob
+  } = require('@azure/storage-blob');
+  const az = require('@azure/storage-file');
+      require('dotenv').config();
+  
+ const STORAGE_ACCOUNT_NAME = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  const ACCOUNT_ACCESS_KEY = process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY;
+  const ONE_MEGABYTE = 1024 * 1024;
+  const FOUR_MEGABYTES = 3 * ONE_MEGABYTE;
+
+
+  async function execute() {
+      const {
+            Aborter,
+            BlobURL,
+            BlockBlobURL,
+            ContainerURL,
+            ServiceURL,
+            StorageSharedKeyCredential,
+            StorageURL,
+            uploadStreamToBlockBlob
+        } = require('@azure/storage-blob');
+    const containerName = "petsiblob"; 
+    const blobName = "quickstart.txt";
+    const content = "hello!";
+    const localFilePath = "./readme.md";
+     
+     const credentials = new StorageSharedKeyCredential(STORAGE_ACCOUNT_NAME, ACCOUNT_ACCESS_KEY);
+     const pipeline = az.StorageURL.newPipeline(credentials);
+     const serviceURL = new az.ServiceURL(`https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net`, pipeline);
+
+     const containerURL = ContainerURL.fromServiceURL(serviceURL, containerName);
+     const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, blobName);  
+     await uploadLocalFile(aborter, containerURL, localFilePath);
+     console.log(`Local file "${localFilePath}" is uploaded`);
+
+      }
+//// end AZure  
+*/ 
+
+ var storage = multer.diskStorage({
   destination:function(req,file,callback){
     callback(null,"./public/uploads");
   },
-  filename: (req, file, cb) => {
-    console.log(file);
-      cb(null,Date.now()+"_"+file.originalname );
+  filename: async (req, file, cb) => {
+    console.log(file);    
+    var name =Date.now()+"_"+file.originalname ; 
+         cb(null, name);
+
+            const blobServiceClient = await BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
+            const containerClient = await blobServiceClient.getContainerClient("petsiblob");
+            const blobName = file.name;
+            const contentType = file.type;
+            const filePath = file.path;
+            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+            const uploadBlobResponse = await blockBlobClient.uploadFile(file.path);
+        
+
+     //execute("./public/uploads/"+name).then(() => console.log("Done")).catch((e) => console.log(e));
   }
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});

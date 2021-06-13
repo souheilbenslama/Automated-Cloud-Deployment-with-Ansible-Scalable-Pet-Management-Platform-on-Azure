@@ -42,6 +42,8 @@ exports.addPet = function(req,res,next){
 }
 
 exports.petProfile = function(req,res,next){
+
+    
     Pet.findById(req.params.petId).exec(function(err,pet){
         if(err){
             err.message="pet not found";
@@ -92,6 +94,7 @@ exports.petProfile = function(req,res,next){
                                                         vaccines = [];
                                                     }
                                                     vaccines.sort(function(a,b){return a.date-b.date;});
+                                                    
                                                     return res.send({pet:pet,bath:baths[0],food:food[0],appointment:appointments[0],Treatment:treatments[0],vaccine:vaccines[0]});
                                                 }
                                             });

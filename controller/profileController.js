@@ -7,6 +7,7 @@ exports.profile = function(req, res, next) {
         if(error){
             return next(error);
         }else{
+            console.log("hello");
             user.password = null;
             res.send(user);
         }
