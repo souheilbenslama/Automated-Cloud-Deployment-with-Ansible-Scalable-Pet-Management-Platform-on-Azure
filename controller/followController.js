@@ -57,12 +57,12 @@ exports.notFollows = function(req,res,next){
             return next(err);
         }else{
             var notFollows = [];
-            Follow.find({followed:req.user._id}).exec(function(error,follows){
+            Follow.find({follower:req.user._id}).exec(function(error,follows){
                 if(error){
                     error.message="follows not found!";
                     return next(error.message);
                 }else{
-                    var arr = follows.map(function(obj){return obj.follower.toString()});
+                    var arr = follows.map(function(obj){return obj.followed.toString()});
                     for(var u of users ){
                         if(arr.indexOf(u._id.toString())<0 && req.user._id != u._id ){
                             u.password=null;
@@ -99,7 +99,7 @@ exports.requests = function(req,res,next){
 }
 
 exports.cancelFollow = function(req,res,next){
-    Follow.remove({followed:req.params.userId,follower:req.user._id},function(error){
+    Follow.remove({_id:req.params.followId},function(error){
         if(error){
             error.message="user not found!";
             return next(error.message);

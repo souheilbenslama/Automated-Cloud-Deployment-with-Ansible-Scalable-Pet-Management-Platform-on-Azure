@@ -154,8 +154,8 @@ router.get("/dossierRequests",mid.loggedIn,mid.verifyVet,dossierController.reque
 
 router.route("/follow/:userId")
       .get(mid.loggedIn,followController.visitUser)
-      .post(mid.loggedIn,followController.follow)
-      .delete(mid.loggedIn,followController.cancelFollow);
+      .post(mid.loggedIn,followController.follow);
+router.delete("/follow/:followId",mid.loggedIn,followController.cancelFollow);
 router.put("/confirmFollow/:followId",mid.loggedIn,followController.confirmFollow);
 router.get("/followers",mid.loggedIn,followController.followers);
 router.get("/follows",mid.loggedIn,followController.follows);
