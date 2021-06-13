@@ -50,6 +50,32 @@ exports.follows = function(req,res,next){
     });
 }
 
+exports.notFollows = function(req,res,next){
+    var notFollows = [];
+    User.find().exec(function(err,users){
+        if(err){
+            return next(err);
+        }else{
+            var notFollows = [];
+            Follow.find({followed:req.user._id}).exec(function(error,follows){
+                if(error){
+                    error.message="follows not found!";
+                    return next(error.message);
+                }else{
+                    var arr = follows.map(function(obj){return obj.follower.toString()});
+                    for(var u of users ){
+                        if(arr.indexOf(u._id.toString())<0 && req.user._id != u._id ){
+                            u.password=null;
+                            notFollows.push(u);
+                        }
+                    }
+                    res.send(notFollows);
+                }
+            });
+        }
+    });
+}
+
 exports.requestsOnHold = function(req,res,next){
     Follow.find({follower:req.user._id,confirm:false}).populate("followed","name surname avatar").exec(function(error,follows){
         if(error){

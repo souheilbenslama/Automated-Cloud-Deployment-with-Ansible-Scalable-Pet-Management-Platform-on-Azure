@@ -6,6 +6,7 @@ var profileController = require("../controller/profileController");
 var petsController = require("../controller/petsController");
 var eventController = require("../controller/eventController");
 var postController = require("../controller/postController");
+var commentController = require("../controller/commentController");
 var vetController = require("../controller/vetController");
 var offerController = require("../controller/offerController");
 var messageController = require("../controller/messageController");
@@ -102,10 +103,19 @@ router.put("/pet/:petId/status",mid.loggedIn,petsController.updateStatus);
 
 router.route("/post")
       .post(mid.loggedIn,upload.single("photo"), postController.addPost)
-      .get(mid.loggedIn, postController.myPosts)
-
-router.route("/post/:id")
+      .get(mid.loggedIn, postController.myPosts);
+router.route("/post/:postId")
       .delete(mid.loggedIn, postController.deletePost)
+      .put(mid.loggedIn, postController.updatePost);
+router.get("/allPosts",mid.loggedIn,postController.getFollowPosts);
+router.get("/Posts/:receiverId",mid.loggedIn,mid.verifyFollow,postController.getPosts);
+
+router.route("/post/:postId/comment")
+      .post(mid.loggedIn,upload.single("photo"), commentController.addComment)
+      .get(mid.loggedIn, commentController.getComments);
+router.route("/comment/:commentId")
+      .delete(mid.loggedIn, commentController.deleteComment)
+      .put(mid.loggedIn, commentController.updateComment);
 
 
 router.route("/pet/:petId/offer")
@@ -149,6 +159,7 @@ router.route("/follow/:userId")
 router.put("/confirmFollow/:followId",mid.loggedIn,followController.confirmFollow);
 router.get("/followers",mid.loggedIn,followController.followers);
 router.get("/follows",mid.loggedIn,followController.follows);
+router.get("/notFollows",mid.loggedIn,followController.notFollows);
 router.get("/requestsOnHold",mid.loggedIn,followController.requestsOnHold);
 router.get("/requests",mid.loggedIn,followController.requests);
 

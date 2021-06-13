@@ -247,19 +247,28 @@ exports.addWeight = function(req,res,next){
                     error.message ="pet not found";
                     return next(error.message);
                 }else{
-                    var date = new Date();
-                    console.log(Date(date.setHours( 0 )*1000));
-                    Weight.remove({ createdAt:{ $gte:date.setHours( 0,0,0,0 ), $lte: date } }, function(err) {
-                        if (err) {
+                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                        weight:weight.weight,
+                    }},function(err,pet){
+                        if(err){
                             next(err);
-                        }
-                        else {
-                            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                                weight:weight.weight,
-                            }},function(err){
+                        }else{
+                            Weight.find({pet:pet._id},function(err,weights){
                                 if(err){
-                                    next(err);
+                                    err.message="weight not found";
+                                    next(err.message);
                                 }else{
+                                    if(!weights){
+                                        weights = [];
+                                    }
+                                    weights.sort(function(a,b){return a.createdAt-b.createdAt;});
+                                    if(weight.createdAt.getFullYear() == weights[weights.length-2].createdAt.getFullYear() && weight.createdAt.getDate() == weights[weights.length-2].createdAt.getDate() && weight.createdAt.getMonth() == weights[weights.length-2].createdAt.getMonth() ){
+                                        Weight.remove({ _id: weights[weights.length-2]._id }, function(err) {
+                                            if (err) {
+                                                next(err);
+                                            }
+                                        });
+                                    }
                                     res.status(200).send("weight added");
                                 }
                             });

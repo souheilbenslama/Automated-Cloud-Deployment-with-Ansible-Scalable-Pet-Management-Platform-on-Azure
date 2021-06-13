@@ -2,13 +2,12 @@ var mongoose = require("mongoose");
 
 
 var CommentSchema = new mongoose.Schema({
-    name:{type:String,required:true,trim:true},
-    post:{type:mongoose.Schema.Types.ObjectId,ref:'Post'},
-    comment:{type: String},
-    commenter:{type:mongoose.Schema.Types.ObjectId,ref:'User'}
+    post:{type:mongoose.Schema.Types.ObjectId,ref:'Post',required:true},
+    comment:{type: String,required:true},
+    commenter:{type:mongoose.Schema.Types.ObjectId,ref:'User',require:true}
 },
 {timestamps:true});
 
-var Pet = mongoose.model("Pet",PetSchema);
+var Comment = mongoose.model("Comment",CommentSchema);
 
-module.exports = Pet ;
+module.exports = Comment ;
