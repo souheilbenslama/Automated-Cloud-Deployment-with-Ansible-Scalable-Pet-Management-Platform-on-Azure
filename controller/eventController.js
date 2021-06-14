@@ -236,46 +236,35 @@ exports.findWeight = function(req,res,next){
 }
 exports.addWeight = function(req,res,next){
     req.body.pet = req.params.petId;
-    Weight.create(req.body,function(error,weight){ 
-        if(error){
-            error.message="wrong data! weight can't be created!";
-            return next(error.message);
-        }else{
-
-            Pet.findById(req.params.petId).exec(function(error){
+    var date = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate(),0,0,0);
+    Weight.remove({pet:req.params.petId,createdAt:{ $gte : date}},function(err){
+        if(err){
+            err.message="weight not found";
+            next(err.message);
+        }else{ 
+            Weight.create(req.body,function(error,weight){ 
                 if(error){
-                    error.message ="pet not found";
+                    error.message="wrong data! weight can't be created!";
                     return next(error.message);
                 }else{
-                    Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
-                        weight:weight.weight,
-                    }},function(err,pet){
-                        if(err){
-                            next(err);
+                    Pet.findById(req.params.petId).exec(function(error){
+                        if(error){
+                            error.message ="pet not found";
+                            return next(error.message);
                         }else{
-                            Weight.find({pet:pet._id},function(err,weights){
+                            Pet.findOneAndUpdate({_id:req.params.petId},{$set:{
+                                weight:weight.weight,
+                            }},function(err,pet){
                                 if(err){
-                                    err.message="weight not found";
-                                    next(err.message);
+                                    next(err);
                                 }else{
-                                    if(!weights){
-                                        weights = [];
-                                    }
-                                    weights.sort(function(a,b){return a.createdAt-b.createdAt;});
-                                    if(weight.createdAt.getFullYear() == weights[weights.length-2].createdAt.getFullYear() && weight.createdAt.getDate() == weights[weights.length-2].createdAt.getDate() && weight.createdAt.getMonth() == weights[weights.length-2].createdAt.getMonth() ){
-                                        Weight.remove({ _id: weights[weights.length-2]._id }, function(err) {
-                                            if (err) {
-                                                next(err);
-                                            }
-                                        });
-                                    }
                                     res.status(200).send("weight added");
                                 }
                             });
                         }
-                    });
+                    }); 
                 }
-            }); 
+            });
         }
     });
 }
