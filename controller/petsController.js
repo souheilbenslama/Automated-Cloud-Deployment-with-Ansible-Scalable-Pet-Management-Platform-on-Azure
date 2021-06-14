@@ -118,11 +118,13 @@ exports.updatePetProfile = function(req,res,next){
         }else{
             var defaultPhoto = pet.photo;
             req.body.photo = (req.file)?"uploads/" + req.file.filename:defaultPhoto;
-            Pet.findOneAndUpdate({_id:req.params.petId},{$set:req.body},function(err){
+            Pet.findOneAndUpdate({_id:req.params.petId},{$set:req.body},{
+                new: true
+              },function(err,newpet){
                 if(err){
                     next(err);
                 }else{
-                    res.status(200).send("pet updated");
+                    res.status(200).json(newpet);
                     
                 }
             });
