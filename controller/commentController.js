@@ -15,7 +15,7 @@ exports.addComment = function(req,res,next){
 }
 
 exports.getComments = function(req,res,next){
-    Comment.find({post:req.params.postId},function(err,comments){
+    Comment.find({post:req.params.postId}).populate('commenter').exec(function(err,comments){
         if(err){
             err.message="comments not found!";
             return next(err.message);

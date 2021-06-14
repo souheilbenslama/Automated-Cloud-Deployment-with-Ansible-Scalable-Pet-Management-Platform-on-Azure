@@ -251,7 +251,7 @@ router.put("/confirmOffer/:offerId",mid.loggedIn,offerController.confirmOffer);
 
 router.route("/message/:receiverId")
       .get(mid.loggedIn,messageController.getmessages)
-      .post(mid.loggedIn,mid.verifyFollow,messageController.sendMessage);
+      .post(mid.loggedIn,messageController.sendMessage);
 router.route("/messages")
       .get(mid.loggedIn,messageController.getallmessages)    
 

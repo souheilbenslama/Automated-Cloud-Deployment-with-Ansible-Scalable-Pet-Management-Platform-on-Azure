@@ -41,12 +41,14 @@ exports.updateProfile = function(req,res,next){
                 }else{
                     var defaultAvatar = user.avatar;
                     req.body.avatar = (req.file)?"uploads/" + req.file.filename:defaultAvatar;
-                    User.findOneAndUpdate({_id:req.user._id},{$set:req.body},function(err){
+                    User.findOneAndUpdate({_id:req.user._id},{$set:req.body},{
+                        new: true
+                      },function(err,newUser){
                         if(err){
                             next(err);
                         }else{
                             user.password = null;
-                            res.status(200).send(user);
+                            res.status(200).send(newUser);
                         }
                     });
                 }
