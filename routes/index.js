@@ -59,12 +59,10 @@ async function execute(filepath) {
       containerClient.setMetadata
       const blobClient = containerClient.getBlobClient(blobName);
       const blockBlobClient = blobClient.getBlockBlobClient();
-      
-      const aborter = AbortController.timeout(30 * ONE_MINUTE);
+      const aborter = AbortController.timeout(30*ONE_MINUTE);
   
       await uploadLocalFile(aborter, containerClient, localFilePath);
       console.log(`Local file "${localFilePath}" is uploaded`);
-  
   }
   
   
@@ -129,7 +127,8 @@ const {
     console.log(file);    
     var name =Date.now()+"_"+file.originalname ; 
          cb(null, name);
-
+            
+            console.log(file) ;
             const blobServiceClient = await BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
             const containerClient = await blobServiceClient.getContainerClient("petsiblob");
             const blobName = file.name;

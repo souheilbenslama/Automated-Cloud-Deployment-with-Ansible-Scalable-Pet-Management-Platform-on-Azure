@@ -85,6 +85,7 @@ exports.petProfile = function(req,res,next){
                                                 treatments = [];
                                             }
                                             treatments.sort(function(a,b){return a.date-b.date;});
+                                            
                                             Vaccine.find({pet:pet._id,date:{$gte:new Date()}},function(err,vaccines){
                                                 if(err){
                                                     err.message="vaccine not found";
