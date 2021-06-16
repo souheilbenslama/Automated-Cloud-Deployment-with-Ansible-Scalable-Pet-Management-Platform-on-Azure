@@ -32,7 +32,7 @@ const { Console } = require('console');
   const FOUR_MEGABYTES = 4 * ONE_MEGABYTE;
   const ONE_MINUTE = 60 * 1000;
   
-async function execute(filepath,filename) {
+async function execute(filepath,filename,file) {
         
       const containerName = "petsiblob";
       const blobName = filename;      
@@ -43,12 +43,11 @@ async function execute(filepath,filename) {
           
       const containerClient = blobServiceClient.getContainerClient(containerName);
       const blobClient = containerClient.getBlobClient(blobName);
-      let fileStream = fs.createReadStream(filepath);
       const blobOptions = { blobHTTPHeaders: { blobContentType: 'image/jpg' } };
 
      const blockBlobClient = blobClient.getBlockBlobClient();
 
-      blockBlobClient.uploadStream(fileStream,fileStream.readableHighWaterMark ,undefined,blobOptions);
+      blockBlobClient.uploadStream(file.stream,file.stream.readableHighWaterMark ,undefined,blobOptions);
 
       console.log(`Local file "${localFilePath}" is uploaded`);
   }
@@ -60,11 +59,12 @@ async function execute(filepath,filename) {
     callback(null,"./public/uploads");
   },
   filename: async (req, file, cb) => {
-    console.log(file.stream.rea);    
+       
     var name =Date.now()+"_"+file.originalname ; 
+    
          cb(null, name);
               
-            execute("./public/uploads/"+name,name).then(() => console.log("Done")).catch((e) => console.log(e));
+            execute("./public/uploads/"+name,name,file).then(() => console.log("Done")).catch((e) => console.log(e));
   }
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
