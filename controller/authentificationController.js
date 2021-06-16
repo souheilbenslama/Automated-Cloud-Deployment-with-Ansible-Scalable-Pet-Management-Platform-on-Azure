@@ -40,11 +40,11 @@ exports.register = function(req, res, next) {
                     return res.status(401).send("phone already exists");
                 }else{
                     if(req.body.gender == "Male"){
-                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/male.png";
+                        req.body.avatar = (req.file)? req.file.filename:"images/male.png";
                     }else if(req.body.gender == "Female"){
-                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/female.png";
+                        req.body.avatar = (req.file)? + req.file.filename:"images/female.png";
                     }else{
-                        req.body.avatar = (req.file)?"uploads/" + req.file.filename:"images/default.jpg";
+                        req.body.avatar = (req.file)? + req.file.filename:"images/default.jpg";
                     }
                     User.create(req.body,function(error,user){ 
                         if(error){

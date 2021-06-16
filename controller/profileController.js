@@ -40,7 +40,7 @@ exports.updateProfile = function(req,res,next){
                     return res.status(401).send("phone already exists");
                 }else{
                     var defaultAvatar = user.avatar;
-                    req.body.avatar = (req.file)?"uploads/" + req.file.filename:defaultAvatar;
+                    req.body.avatar = (req.file)? req.file.filename:defaultAvatar;
                     User.findOneAndUpdate({_id:req.user._id},{$set:req.body},{
                         new: true
                       },function(err,newUser){

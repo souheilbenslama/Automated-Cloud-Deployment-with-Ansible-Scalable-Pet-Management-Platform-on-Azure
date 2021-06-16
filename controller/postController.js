@@ -52,7 +52,7 @@ exports.getFollowPosts = function(req,res,next){
 
 exports.addPost = function(req,res,next){
     if(req.file) {
-        req.body.photo = "uploads/" + req.file.filename;
+        req.body.photo =   req.file.filename;
     }
     req.body.user=req.user._id;
     Post.create(req.body,function(error){ 
@@ -71,7 +71,7 @@ exports.updatePost = function(req,res,next){
         }else{
             var defaultPhoto = post.photo;
             if(req.file) {
-                req.body.photo="uploads/" + req.file.filename
+                req.body.photo= req.file.filename
             } else {
                 req.body.photo = defaultPhoto
             }

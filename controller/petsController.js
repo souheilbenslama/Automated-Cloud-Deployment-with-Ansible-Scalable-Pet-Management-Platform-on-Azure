@@ -19,7 +19,7 @@ exports.myPets = function(req,res,next){
 }
 
 exports.addPet = function(req,res,next){
-    req.body.photo = (req.file)?"uploads/" + req.file.filename:"images/avatar.jpg";
+    req.body.photo = (req.file)? req.file.filename:"images/avatar.jpg";
     req.body.owner=req.user._id;
     Pet.create(req.body,function(error,pet){ 
         if(error){
@@ -117,7 +117,7 @@ exports.updatePetProfile = function(req,res,next){
             return next(error);
         }else{
             var defaultPhoto = pet.photo;
-            req.body.photo = (req.file)?"uploads/" + req.file.filename:defaultPhoto;
+            req.body.photo = (req.file)? req.file.filename:defaultPhoto;
             Pet.findOneAndUpdate({_id:req.params.petId},{$set:req.body},{
                 new: true
               },function(err,newpet){
