@@ -63,7 +63,7 @@ exports.getDossier = function(req,res,next){
                                     err.message="food not found";
                                     next(err.message);
                                 }else{
-                                    Appointment.find({pet:pet._id,date:{$lte:limit}},function(err,appointments){
+                                    Appointment.find({pet:pet._id,date:{$lte:limit}}).populate("vet","name surname").exec(function(err,appointments){
                                         if(err){
                                             err.message="appointment not found";
                                             next(err.message);
@@ -73,7 +73,7 @@ exports.getDossier = function(req,res,next){
                                                     err.message="treatment not found";
                                                     next(err.message);
                                                 }else{
-                                                    Vaccine.find({pet:pet._id,date:{$lte:limit}},function(err,vaccines){
+                                                    Vaccine.find({pet:pet._id,date:{$lte:limit}}).populate("vet","name surname").exec(function(err,vaccines){
                                                         if(err){
                                                             err.message="vaccine not found";
                                                             next(err.message);
