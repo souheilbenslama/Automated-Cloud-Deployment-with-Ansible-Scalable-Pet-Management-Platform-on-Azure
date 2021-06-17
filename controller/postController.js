@@ -37,6 +37,7 @@ exports.getFollowPosts = function(req,res,next){
                 }else{
                     var allPosts = [];
                     var arr = follows.map(function(obj){return obj.followed.toString()});
+                    arr.push(req.user._id.toString());
                     for(var p of posts ){
                         if(arr.indexOf(p.user._id.toString())>=0 ){
                             allPosts.push(p);
