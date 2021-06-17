@@ -19,7 +19,7 @@ exports.myPets = function(req,res,next){
 }
 
 exports.addPet = function(req,res,next){
-    req.body.photo = (req.file)? req.file.filename:"images/avatar.jpg";
+    req.body.photo = (req.file)? req.file.filename:"avatar.jpg";
     req.body.owner=req.user._id;
     Pet.create(req.body,function(error,pet){ 
         if(error){
