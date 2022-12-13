@@ -1,0 +1,6 @@
+[webservers]
+vs1 ansible_host=20.50.199.23 ansible_user=azureuser ansible_ssh_private_key_file=../../../vmkeys/vs1_key.pem
+vs2 ansible_host=20.56.12.67 ansible_user=azureuser ansible_ssh_private_key_file=../../../vmkeys/vs2_key.pem
+
+// [loadbalancer]
+// lb ansible_host=4.233.217.124 ansible_user=azureuser ansible_ssh_private_key_file=../../../vmkeys/lb_key.pem

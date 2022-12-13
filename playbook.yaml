@@ -1,0 +1,58 @@
+- name: My first play
+  hosts: webservers
+  become: yes
+  tasks:
+   - name: Install nginx
+     apt:
+       name: nginx
+       state: present
+       update_cache: true
+
+   - name: create www directory if they don't exist
+     file:
+        path: /home/{{ ansible_user }}/www
+        state: directory
+   - name: Copy nginx configuration
+     template:
+       src: ./website.j2
+       dest: /etc/nginx/sites-available/website.conf
+   - name: Enable the website
+     file:
+       src: /etc/nginx/sites-available/website.conf
+       dest: /etc/nginx/sites-enabled/default
+       state: link
+   - name: start nginx
+     service:
+       name: nginx
+       state: restarted
+       enabled: true
+   - name: Copy index.html
+     template:
+       src: ./www/index.j2
+       dest: /home/{{ ansible_user }}/www/index.html
+
+- name: LoadBalancerPlaybook
+  hosts: loadbalancer
+  become: yes
+  vars:
+    haproxy_algorithm: roundrobin
+  tasks:
+    - name: Install haproxy
+      apt:
+        name: haproxy
+        state: present
+        update_cache: true
+    - name: enable haproxy
+      service:
+        name: haproxy
+        state: started
+        enabled: true
+    - name: Put HAProxy configuration
+      template:
+          src: ./haproxy.cfg.j2
+          dest: /etc/haproxy/haproxy.cfg
+    - name: Restart and enable HAProxy
+      service:
+          name: haproxy
+          state: restarted
+          enabled: true
