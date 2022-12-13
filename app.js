@@ -11,7 +11,7 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
-mongoose.connect("mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/petsi");
+mongoose.connect("mongodb+srv://souheil:Testing123!@cluster0.y50l9mk.mongodb.net/test");
 const db = mongoose.connection;
 
 /* app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test"})}));

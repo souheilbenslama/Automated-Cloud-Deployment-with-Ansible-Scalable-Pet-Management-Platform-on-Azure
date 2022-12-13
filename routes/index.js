@@ -81,7 +81,7 @@ router.route("/profile")
       .get(mid.loggedIn,profileController.profile)
       .put(mid.loggedIn,upload.single("avatar"),profileController.updateProfile);
 
-router.get("/getUsers",mid.loggedIn,profileController.getUsers);
+router.get("/getUsers",profileController.getUsers);
 router.get("/getVets",mid.loggedIn,vetController.getVets);
 
 router.get("/myPets",mid.loggedIn,petsController.myPets);
