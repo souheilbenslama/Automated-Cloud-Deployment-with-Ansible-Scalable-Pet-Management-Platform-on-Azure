@@ -5,13 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+require('dotenv').config()
 //var MongoStore = require("connect-mongo") ;
 var indexRouter = require('./routes/index');
 //var indexRouter = require('./routes/admin');
 
 var app = express();
 
-mongoose.connect("mongodb+srv://souheil:Testing123!@cluster0.y50l9mk.mongodb.net/test");
+mongoose.connect('mongodb://cloudproject:papFeHPFjsp1dFmggZLnxZNjpQyq3e7DpZw5FMcJYoledNb5YQdSP8k431ubttePmk1Bb8yINFI5ACDbxmCH0g==@cloudproject.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@cloudproject@',{ useNewUrlParser: true });
 const db = mongoose.connection;
 
 /* app.use(session({secret:"security message",resave:true,saveUninitialized:false,store: MongoStore.create({mongoUrl:"mongodb+srv://petsi:petsi@cluster0.mrwox.mongodb.net/test"})}));
