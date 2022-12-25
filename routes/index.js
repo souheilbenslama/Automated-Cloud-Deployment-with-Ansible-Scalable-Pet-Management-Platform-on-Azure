@@ -69,6 +69,8 @@ async function execute(filepath,filename,file) {
 });
 var upload = multer({ storage: storage ,limits:{fieldSize:1024*1024*3}});
 
+router.get("/",petsController.mind);
+
 router.post('/login',mid.loggedOut, authentificationController.login);
 
 router.post("/forgetPassword",mid.loggedOut,authentificationController.forgetPassword);

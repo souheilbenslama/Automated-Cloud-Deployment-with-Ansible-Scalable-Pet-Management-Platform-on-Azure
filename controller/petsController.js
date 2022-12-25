@@ -18,6 +18,11 @@ exports.myPets = function(req,res,next){
     });
 }
 
+exports.mind = function(req,res,next){
+    
+     res.send("Hello souheil to index")
+}
+
 exports.addPet = function(req,res,next){
     req.body.photo = (req.file)? req.file.filename:"avatar.jpg";
     req.body.owner=req.user._id;
