@@ -1,0 +1,38 @@
+- name: My first play
+  hosts: webservers
+  become: yes
+  tasks:
+   - name: Install GPG
+     tags: nodejs, install, setup
+     apt:
+         name: gnupg
+         update_cache: yes
+         state: present
+
+   - name: Install the gpg key for nodejs LTS
+     apt_key:
+       url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+       state: present
+
+   - name: Install the nodejs LTS repos
+     apt_repository:
+       repo: "deb https://deb.nodesource.com/node_18.x focal main"
+       state: present
+       update_cache: yes
+
+   - name: Install NodeJS
+     tags: nodesjs, install
+     apt:
+        name: nodejs
+        state: latest
+
+   - name: Copy build to server
+     tags: app, build, deploy
+     copy:
+       src: /home/souheil/Desktop/Cloudproject/app
+       dest: /home/{{ ansible_user }}/www/
+
+   - name: Install packages based on package.json.
+     npm:
+       path: /home/{{ ansible_user }}/www/app/
+
