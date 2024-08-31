@@ -53,7 +53,3 @@ Follow these steps to deploy and run the project:
 
 5. **Access the Application**:
    - Once the playbook completes, the application should be accessible through the public IP of the load balancer.
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
